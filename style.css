@@ -586,7 +586,10 @@ mark { background: color-mix(in srgb, var(--star) 30%, transparent); color: inhe
 
 /* ---------- 桌面：模块条与内容对齐 ---------- */
 @media (min-width: 820px) {
-  .chips { max-width: 860px; margin: 0 auto; padding: 9px 12px; border-bottom: 0; }
+  .chips {
+    max-width: 860px; margin: 0 auto; padding: 10px 12px 6px; border-bottom: 0;
+    background: transparent;
+  }
 }
 
 /* ---------- 闪卡版式修正 ---------- */
