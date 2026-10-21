@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>电动汽车及性能优化 · 备考手册（完整版）</title>
+<style>
+:root{
+  --ink:#16181d; --ink2:#3f4650; --muted:#7b838d; --line:#dcdfe3; --line2:#eceef0;
+  --accent:#0d7a6f; --accent-weak:#eef7f5; --warn:#a8421c; --warn-weak:#fdf2ec;
+  --tip:#1f5f9e; --tip-weak:#eef4fb; --star:#b8790c;
+  --font:-apple-system,BlinkMacSystemFont,"PingFang SC","HarmonyOS Sans SC","MiSans","Source Han Sans SC","Noto Sans CJK SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"SF Mono",ui-monospace,Consolas,monospace;
+  --math:"Cambria Math",Cambria,"Times New Roman",Georgia,serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:#eceef0; color:var(--ink); font-family:var(--font);
+  font-size:15px; line-height:1.78; -webkit-font-smoothing:antialiased;
+}
+.page{
+  max-width:820px; margin:0 auto; background:#fff; padding:56px 62px 72px;
+  box-shadow:0 1px 3px rgba(0,0,0,.08);
+}
+/* 封面 */
+.cover{padding:26px 0 30px;border-bottom:2px solid var(--ink);margin-bottom:34px}
+.cover .kicker{font-size:11.5px;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
+.cover h1{font-size:31px;line-height:1.35;margin:14px 0 6px;letter-spacing:-.01em;font-weight:700}
+.cover .sub{font-size:15px;color:var(--ink2);margin:0 0 20px}
+.cover .meta{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:12.5px;color:var(--muted);font-family:var(--mono)}
+.cover .note{margin-top:22px;font-size:13.5px;color:var(--ink2);line-height:1.8}
+
+/* 目录 */
+.toc{margin:0 0 12px}
+.toc h2{font-size:14px;letter-spacing:.12em;color:var(--muted);margin:0 0 12px;font-weight:650}
+.toc ol{list-style:none;margin:0;padding:0;font-size:13.5px}
+.toc>ol>li{margin:0 0 8px}
+.toc a{color:var(--ink);text-decoration:none;border-bottom:1px dotted transparent}
+.toc a:hover{border-bottom-color:var(--line)}
+.toc .m{font-weight:620}
+.toc .s{display:block;color:var(--muted);font-size:12.5px;margin:3px 0 0 0;padding-left:18px;column-gap:14px}
+.toc .s a{color:var(--ink2);display:inline-block;margin-right:12px;white-space:nowrap}
+.toc .no{display:inline-block;min-width:2.2em;color:var(--accent);font-family:var(--mono);font-size:12px}
+
+/* 章节 */
+.mod{margin-top:38px}
+.mod-h{border-top:1px solid var(--ink);padding-top:10px;margin-bottom:16px;display:flex;align-items:baseline;gap:10px}
+.mod-h .mn{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.06em}
+.mod-h h2{font-size:21px;margin:0;font-weight:700;letter-spacing:-.01em}
+.mod-h .md{margin-left:auto;font-size:11.5px;color:var(--muted)}
+
+.entry{margin:0 0 20px;padding-bottom:16px;border-bottom:1px solid var(--line2)}
+.entry:last-child{border-bottom:0}
+.entry-h{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
+.entry-h .en{font-family:var(--mono);font-size:11.5px;color:var(--muted);flex:none}
+.entry-h h3{font-size:15.6px;margin:0;font-weight:650;line-height:1.55;flex:1}
+.entry-h .st{font-size:10.5px;color:var(--star);flex:none;letter-spacing:1px}
+.entry-h .st.mid{color:var(--muted)}
+.entry .src{font-size:10.5px;color:var(--muted);font-family:var(--mono);display:block;margin:-2px 0 8px 0}
+.body{color:var(--ink2);font-size:14.2px}
+.body p{margin:7px 0}
+.body ul,.body ol{margin:7px 0;padding-left:21px}
+.body li{margin:3px 0}
+.body b,.body strong{color:var(--ink);font-weight:640}
+
+/* 组件（与 app 同名） */
+.kv{margin:8px 0}
+.kv>div{display:grid;grid-template-columns:5.8em 1fr;gap:12px;padding:6px 0;border-top:1px dashed var(--line)}
+.kv>div:first-child{border-top:0;padding-top:0}
+.kv .k{font-weight:620;color:var(--ink);font-size:13.6px}
+.kv .v{font-size:13.6px}
+
+.tw{margin:10px 0;overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:12.6px;line-height:1.55}
+th{background:#f6f7f8;text-align:left;padding:7px 9px;font-weight:650;font-size:12.2px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:6px 9px;border-top:1px solid var(--line2);vertical-align:top}
+tr:first-child td{border-top:0}
+.tnum{font-family:var(--mono);font-size:11.6px;font-variant-numeric:tabular-nums}
+
+.fm{margin:9px 0;padding:8px 0 8px 12px;border-left:2px solid #bfe0da}
+.fm .eq{font-family:var(--math);font-size:15.4px;line-height:1.95;color:var(--ink);display:flex;flex-wrap:wrap;align-items:center;gap:3px;word-break:break-word}
+.fm .eq i{font-style:italic}
+.fm .note{font-size:11.8px;color:var(--ink2);margin-top:4px;line-height:1.65}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:-.42em;margin:0 2px;font-size:.94em;line-height:1.25}
+.fr>b{font-weight:400;border-bottom:1px solid currentColor;padding:0 3px 1px}
+.fr>u{text-decoration:none;padding:1px 3px 0}
+
+.warn,.tip,.ex{margin:8px 0;padding:8px 11px;border-radius:7px;font-size:13.2px;line-height:1.7}
+.warn{background:var(--warn-weak);border-left:2.5px solid var(--warn)}
+.tip{background:var(--tip-weak);border-left:2.5px solid var(--tip)}
+.ex{background:#f7f8f9;border:1px dashed var(--line)}
+.warn b,.tip b,.ex b{color:var(--ink)}
+.warn::before,.tip::before,.ex::before{display:block;font-size:10px;font-weight:700;letter-spacing:.1em;margin-bottom:2px;opacity:.85}
+.warn::before{content:"易错";color:var(--warn)}
+.tip::before{content:"要点";color:var(--tip)}
+.ex::before{content:"答法";color:var(--muted)}
+.hl{background:linear-gradient(transparent 60%,#d7efe9 60%);color:var(--ink)}
+.n{font-family:var(--mono);font-size:.9em;background:#f1f3f4;padding:0 4px;border-radius:3px;color:var(--ink)}
+
+/* 闪卡附录 */
+.cards{margin-top:34px}
+.cards h2{font-size:18px;border-top:1px solid var(--ink);padding-top:10px;margin:0 0 14px}
+.qa{display:grid;grid-template-columns:1fr;gap:2px;padding:8px 0;border-bottom:1px solid var(--line2);font-size:13.4px}
+.qa .q{font-weight:620;color:var(--ink)}
+.qa .a{color:var(--ink2)}
+.qa .qn{font-family:var(--mono);font-size:11px;color:var(--muted);margin-right:6px}
+
+.printbar{
+  position:fixed;right:22px;bottom:22px;display:flex;gap:8px;z-index:9;
+}
+.printbar button{
+  font:inherit;font-size:13px;padding:9px 16px;border-radius:999px;border:1px solid var(--line);
+  background:#fff;color:var(--ink);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+.printbar button.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+
+@media (max-width:760px){
+  .page{padding:28px 20px 50px}
+  .cover h1{font-size:24px}
+  body{font-size:15px}
+  .printbar{right:12px;bottom:12px}
+}
+
+
+/* 署名 */
+.cover .meta .sign { color: var(--accent); letter-spacing: .06em; }
+.endmark { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line2); text-align: center; }
+.endmark span { font-size: 10.5px; letter-spacing: .2em; text-indent: .2em; color: var(--muted); }
+@media print { .endmark { margin-top: 26px; } }
+
+@page{size:A4;margin:16mm 15mm}
+@media print{
+  body{background:#fff;font-size:10.5pt;line-height:1.62}
+  .page{max-width:none;margin:0;padding:0;box-shadow:none}
+  .printbar{display:none}
+  .mod{break-before:page}
+  .cover{break-after:page}
+  .entry{break-inside:avoid}
+  .tw,.fm,.warn,.tip,.ex,.kv>div{break-inside:avoid}
+  a{color:inherit;text-decoration:none}
+  .toc .s{display:block}
+}
+</style>
+</head>
+<body>
+<div class="printbar">
+  <button id="btnTop">回到顶部</button>
+  <button class="pri" onclick="window.print()">打印 / 存为 PDF</button>
+</div>
+
+<div class="page">
+  <div class="cover">
+    <div class="kicker">Open-book Exam Reference · Full Edition</div>
+    <h1>电动汽车及性能优化<br>备考手册（完整版）</h1>
+    <p class="sub">车辆动力学基础 · 构造与原理 · 动力储能装置 · 驱动电机与调速 · 性能优化与电控</p>
+    <div class="meta">
+      <span id="mCount"></span>
+      <span id="qCount"></span>
+      <span id="dCount"></span>
+      <span id="mDate"></span>
+      <span class="sign">姜sir制造</span>
+    </div>
+    <div class="note">
+      <b>使用说明</b>：本手册按教材/讲义顺序线性编排，内容与速查网页完全同源，适合通读、打印与批注。
+      建议考前先通读一遍建立框架，再用网页版「闪卡」逐条自测；考试当天带网页版做关键词检索。
+      条目左上角圆点为重要度：●●● 必背核心（定义/对比/公式）、●● 常考（结构与参数）、● 了解。
+    </div>
+  </div>
+
+  <div class="toc" id="toc">
+    <h2>目 录</h2>
+    <ol id="tocList"></ol>
+  </div>
+
+  <div id="body"></div>
+
+  <div class="cards" id="cards">
+    <h2>附录 · 自测卡片（问 → 答）</h2>
+    <div id="cardList"></div>
+  </div>
+
+  <div class="endmark"><span>姜sir制造</span></div>
+</div>
+
+<script src="data/d0-index.js"></script>
+<script src="data/d1-theory.js"></script>
+<script src="data/d2-struct.js"></script>
+<script src="data/d3-battery.js"></script>
+<script src="data/d4-motor.js"></script>
+<script src="data/d5-ctrl.js"></script>
+<script src="data/d6-quick.js"></script>
+<script>
+(function(){
+  var EV = window.EV;
+  var toc = [], body = "";
+  var total = 0;
+
+  EV.mods.forEach(function(m, mi){
+    var items = EV.items.filter(function(it){ return it.m === m.id; });
+    if (!items.length) return;
+    var mn = ["一","二","三","四","五","六","七","八","九","十"][mi] || (mi+1);
+
+    body += '<section class="mod" id="mod-'+m.id+'">' +
+      '<div class="mod-h"><span class="mn">CHAPTER '+mn+'</span>' +
+      '<h2>'+m.name+'</h2><span class="md">'+items.length+' 条</span></div>';
+
+    var sub = [];
+    items.forEach(function(it, ii){
+      total++;
+      var no = (mi+1)+"."+(ii+1);
+      var st = it.s >= 3 ? "●●●" : it.s === 2 ? "●●" : "●";
+      sub.push('<a href="#e-'+it.id+'">'+no+' '+it.t.replace(/[（(].*?[)）]/g,'')+'</a>');
+      body += '<article class="entry" id="e-'+it.id+'">' +
+        '<div class="entry-h"><span class="en">'+no+'</span><h3>'+it.t+'</h3>' +
+        '<span class="st'+(it.s<3?' mid':'')+'">'+st+'</span></div>' +
+        (it.src ? '<span class="src">'+it.src+'</span>' : '') +
+        '<div class="body">'+it.b+'</div></article>';
+    });
+    body += '</section>';
+    toc.push('<li><a class="m" href="#mod-'+m.id+'"><span class="no">'+mn+'</span>'+m.name+'</a>' +
+             '<span class="s">'+sub.join("")+'</span></li>');
+  });
+
+  document.getElementById("body").innerHTML = body;
+  document.getElementById("tocList").innerHTML = toc.join("");
+
+  // 闪卡附录
+  var cl = "";
+  EV.cards.forEach(function(c, i){
+    cl += '<div class="qa"><div class="q"><span class="qn">Q'+(i+1)+'</span>'+c.q+'</div>' +
+          '<div class="a">'+c.a+'</div></div>';
+  });
+  document.getElementById("cardList").innerHTML = cl;
+
+  document.getElementById("mCount").textContent = EV.mods.length + " 章 · " + total + " 个考点";
+  document.getElementById("qCount").textContent = EV.cards.length + " 张自测卡片";
+  var fm=0, tw=0;
+  EV.items.forEach(function(i){ fm += (i.b.match(/class="fm"/g)||[]).length; tw += (i.b.match(/class="tw"/g)||[]).length; });
+  document.getElementById("dCount").textContent = fm + " 个公式 · " + tw + " 张对比表";
+  document.getElementById("mDate").textContent = new Date().toLocaleDateString("zh-CN");
+
+  document.getElementById("btnTop").onclick = function(){ window.scrollTo({top:0,behavior:"smooth"}); };
+})();
+</script>
+</body>
+</html>
