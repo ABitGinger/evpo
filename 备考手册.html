@@ -141,9 +141,38 @@ tr:first-child td{border-top:0}
   a{color:inherit;text-decoration:none}
   .toc .s{display:block}
 }
+
+/* ===== 加载遮罩（内联，先于内容显示） ===== */
+html.booting { overflow: hidden; }
+#boot {
+  position: fixed; inset: 0; z-index: 99;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 24px; background: #eceef0; color: #16181d;
+  font-family: var(--font); transition: opacity .3s ease;
+}
+#boot.done { opacity: 0; pointer-events: none; }
+#boot .bt { font-size: 16px; font-weight: 650; }
+#boot .bs { font-size: 9.5px; color: #9aa2aa; letter-spacing: .26em; margin-bottom: 8px; }
+#boot .bbar { width: min(240px, 58vw); height: 3px; border-radius: 2px; background: #d8dbdf; overflow: hidden; }
+#boot .bbar i { display: block; height: 100%; width: 0; background: #0d7a6f; border-radius: 2px; transition: width .2s ease; }
+#boot .bnote { font-size: 11.5px; color: #7b838d; min-height: 1.3em; font-variant-numeric: tabular-nums; }
+#boot .bretry { display: none; margin-top: 6px; font: inherit; font-size: 13px; color: #0d7a6f;
+  background: #fff; border: 1px solid #cfe3e0; border-radius: 999px; padding: 8px 18px; cursor: pointer; }
+#boot.err .bretry { display: block; }
+#boot.err .bbar i { background: #a8421c; }
+#boot.err .bnote { color: #a8421c; }
+@media print { #boot { display: none !important; } }
 </style>
 </head>
 <body>
+<div id="boot" role="status" aria-live="polite">
+  <div class="bt">电动汽车及性能优化 · 备考手册</div>
+  <div class="bs">LOADING</div>
+  <div class="bbar"><i id="bootBar"></i></div>
+  <div class="bnote" id="bootNote">正在准备…</div>
+  <button class="bretry" id="bootRetry" type="button">重新加载</button>
+</div>
+
 <div class="printbar">
   <button id="btnTop">回到顶部</button>
   <button class="pri" onclick="window.print()">打印 / 存为 PDF</button>
@@ -183,16 +212,83 @@ tr:first-child td{border-top:0}
   <div class="endmark"><span>姜sir制造</span></div>
 </div>
 
-<script src="data/d0-index.js?v=20261022c"></script>
-<script src="data/d1-theory.js?v=20261022c"></script>
-<script src="data/d2-struct.js?v=20261022c"></script>
-<script src="data/d3-battery.js?v=20261022c"></script>
-<script src="data/d4-motor.js?v=20261022c"></script>
-<script src="data/d5-ctrl.js?v=20261022c"></script>
-<script src="data/d6-quick.js?v=20261022c"></script>
-<script src="data/d7-gloss.js?v=20261022c"></script>
 <script>
-(function(){
+/* ===== 带进度反馈的顺序加载器 ===== */
+(function () {
+  var V = "20261022d";
+  var FILES = [
+    ["data/d0-index.js", "模块索引"],
+    ["data/d1-theory.js", "车辆动力学"],
+    ["data/d2-struct.js", "构造与原理"],
+    ["data/d3-battery.js", "动力储能"],
+    ["data/d4-motor.js", "驱动电机"],
+    ["data/d5-ctrl.js", "性能优化"],
+    ["data/d6-quick.js", "速记"],
+    ["data/d7-gloss.js", "符号与术语"]
+  ];
+  var TOTAL = FILES.length + 1;               // +1 表示排版生成
+  var boot = document.getElementById("boot");
+  var bar = document.getElementById("bootBar");
+  var note = document.getElementById("bootNote");
+  var retry = document.getElementById("bootRetry");
+  var t0 = Date.now(), done = 0, aborted = false, slowTimer = null;
+
+  document.documentElement.classList.add("booting");
+  function setNote(t) { if (note) note.textContent = t; }
+  function fail(msg) {
+    aborted = true; clearTimeout(slowTimer);
+    if (boot) boot.classList.add("err");
+    setNote(msg);
+    document.documentElement.classList.remove("booting");
+  }
+  slowTimer = setTimeout(function () {
+    setNote("网络较慢，仍在加载（" + done + "/" + total0() + "）…");
+  }, 8000);
+  function total0() { return TOTAL; }
+  retry.onclick = function () { location.reload(); };
+
+  function finish() {
+    clearTimeout(slowTimer);
+    bar.style.width = "100%";
+    setNote("排版完成");
+    var wait = Math.max(0, 420 - (Date.now() - t0));
+    setTimeout(function () {
+      document.documentElement.classList.remove("booting");
+      boot.classList.add("done");
+      setTimeout(function () { if (boot && boot.parentNode) boot.parentNode.removeChild(boot); }, 340);
+    }, wait);
+  }
+
+  function step() {
+    if (aborted) return;
+    if (done >= FILES.length) {           // 数据齐了 → 生成正文
+      setNote("正在生成目录与正文…");
+      try { window.__buildHB(); }
+      catch (e) { fail("内容生成失败：" + e.message); return; }
+      done = TOTAL;
+      finish();
+      return;
+    }
+    var item = FILES[done];
+    var s = document.createElement("script");
+    s.src = item[0] + "?v=" + V;
+    s.async = false;
+    s.onload = function () {
+      done++;
+      bar.style.width = Math.round(done / TOTAL * 100) + "%";
+      if (done < FILES.length) setNote("正在加载 " + FILES[done][1] + "（" + done + "/" + TOTAL + "）");
+      step();
+    };
+    s.onerror = function () { fail("「" + item[1] + "」加载失败，请检查网络后重试"); };
+    document.body.appendChild(s);
+  }
+
+  setNote("正在加载 " + FILES[0][1] + "（0/" + TOTAL + "）");
+  step();
+})();
+</script>
+<script>
+window.__buildHB = function(){
   var EV = window.EV;
   var toc = [], body = "";
   var total = 0;
@@ -242,7 +338,7 @@ tr:first-child td{border-top:0}
   document.getElementById("mDate").textContent = new Date().toLocaleDateString("zh-CN");
 
   document.getElementById("btnTop").onclick = function(){ window.scrollTo({top:0,behavior:"smooth"}); };
-})();
+};
 </script>
 </body>
 </html>

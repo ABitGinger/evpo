@@ -6,9 +6,62 @@
 <meta name="theme-color" content="#f6f7f8">
 <meta name="format-detection" content="telephone=no">
 <title>电动汽车及性能优化 · 开卷速查</title>
-<link rel="stylesheet" href="style.css?v=20261022c">
+<link rel="stylesheet" href="style.css?v=20261022d">
+<style>
+/* ===== 首屏加载遮罩：内联样式，随 HTML 一起到达，不等外部 CSS ===== */
+html.booting { overflow: hidden; }
+#boot {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 24px;
+  background: #f6f7f8; color: #15181c;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+  transition: opacity .3s ease;
+}
+#boot.done { opacity: 0; pointer-events: none; }
+#boot .bt { font-size: 15.5px; font-weight: 650; letter-spacing: .02em; }
+#boot .bs { font-size: 10px; color: #98a0a8; letter-spacing: .22em; margin-bottom: 8px; }
+#boot .bbar {
+  width: min(230px, 58vw); height: 3px; border-radius: 2px;
+  background: #e3e6e9; overflow: hidden;
+}
+#boot .bbar i {
+  display: block; height: 100%; width: 0; border-radius: 2px;
+  background: #0d7a6f; transition: width .2s ease;
+}
+#boot .bnote {
+  font-size: 11.5px; color: #8b939c; min-height: 1.3em;
+  font-variant-numeric: tabular-nums; letter-spacing: .02em;
+}
+#boot .bretry {
+  display: none; margin-top: 6px;
+  font: inherit; font-size: 13px; color: #0d7a6f;
+  background: #fff; border: 1px solid #cfe3e0; border-radius: 999px;
+  padding: 8px 18px; cursor: pointer;
+}
+#boot.err .bretry { display: block; }
+#boot.err .bbar i { background: #b2461c; }
+#boot.err .bnote { color: #b2461c; }
+
+@media (prefers-color-scheme: dark) {
+  #boot { background: #0e1013; color: #e8ecef; }
+  #boot .bbar { background: #262c32; }
+  #boot .bbar i { background: #46c9bb; }
+  #boot .bt { color: #e8ecef; }
+  #boot .bs, #boot .bnote { color: #78838d; }
+  #boot .bretry { background: #16191d; border-color: #2b4d49; color: #46c9bb; }
+}
+</style>
 </head>
 <body>
+
+<div id="boot" role="status" aria-live="polite">
+  <div class="bt">电动汽车及性能优化 · 开卷速查</div>
+  <div class="bs">OPEN-BOOK QUICK REFERENCE</div>
+  <div class="bbar"><i id="bootBar"></i></div>
+  <div class="bnote" id="bootNote">正在准备…</div>
+  <button class="bretry" id="bootRetry" type="button">重新加载</button>
+</div>
 
 <header class="hdr" id="hdr">
   <div class="hdr-top">
@@ -56,14 +109,95 @@
 <footer class="ft" id="ft" title="姜sir制造"><span>姜sir制造</span></footer>
 <div class="toast" id="toast"></div>
 
-<script src="data/d0-index.js?v=20261022c"></script>
-<script src="data/d1-theory.js?v=20261022c"></script>
-<script src="data/d2-struct.js?v=20261022c"></script>
-<script src="data/d3-battery.js?v=20261022c"></script>
-<script src="data/d4-motor.js?v=20261022c"></script>
-<script src="data/d5-ctrl.js?v=20261022c"></script>
-<script src="data/d6-quick.js?v=20261022c"></script>
-<script src="data/d7-gloss.js?v=20261022c"></script>
-<script src="js/app.js?v=20261022c"></script>
+<noscript>
+  <p style="padding:24px;text-align:center;font-family:sans-serif;color:#b2461c">
+    本页需要启用 JavaScript 才能显示内容。
+  </p>
+</noscript>
+
+<script>
+/* ===== 带进度反馈的顺序加载器 =====
+   改为动态注入，才能知道"加载到第几个文件"，从而给出真实进度。
+   仍然全部是同目录静态文件，file:// 直接打开也可用。 */
+(function () {
+  var V = "20261022d";
+  var FILES = [
+    ["data/d0-index.js", "模块索引"],
+    ["data/d1-theory.js", "车辆动力学"],
+    ["data/d2-struct.js", "构造与原理"],
+    ["data/d3-battery.js", "动力储能"],
+    ["data/d4-motor.js", "驱动电机"],
+    ["data/d5-ctrl.js", "性能优化"],
+    ["data/d6-quick.js", "速记"],
+    ["data/d7-gloss.js", "符号与术语"],
+    ["js/app.js", "界面"]
+  ];
+  var TOTAL = FILES.length;
+  var boot = document.getElementById("boot");
+  var bar = document.getElementById("bootBar");
+  var note = document.getElementById("bootNote");
+  var retry = document.getElementById("bootRetry");
+  var t0 = Date.now();
+  var done = 0, aborted = false, slowTimer = null, hardTimer = null;
+
+  document.documentElement.classList.add("booting");
+
+  function setNote(t) { if (note) note.textContent = t; }
+
+  function fail(msg) {
+    aborted = true;
+    clearTimeout(slowTimer); clearTimeout(hardTimer);
+    if (boot) boot.classList.add("err");
+    setNote(msg);
+    document.documentElement.classList.remove("booting");
+  }
+
+  // 8 秒还没动静 → 提示仍然在加载；22 秒 → 给重试入口（但不中断加载）
+  slowTimer = setTimeout(function () {
+    setNote("网络较慢，仍在加载（" + done + "/" + TOTAL + "）…");
+  }, 8000);
+  hardTimer = setTimeout(function () {
+    if (boot) boot.classList.add("err");
+    setNote("加载时间过长，可点下方重试");
+  }, 22000);
+
+  retry.onclick = function () { location.reload(); };
+
+  function finish() {
+    clearTimeout(slowTimer); clearTimeout(hardTimer);
+    bar.style.width = "100%";
+    setNote("准备就绪");
+    var wait = Math.max(0, 420 - (Date.now() - t0));  // 太快则稍停一下，避免闪一下
+    setTimeout(function () {
+      document.documentElement.classList.remove("booting");
+      boot.classList.add("done");
+      setTimeout(function () { if (boot && boot.parentNode) boot.parentNode.removeChild(boot); }, 340);
+    }, wait);
+  }
+
+  function step() {
+    if (aborted) return;
+    if (done >= TOTAL) { finish(); return; }
+    var item = FILES[done];
+    var s = document.createElement("script");
+    s.src = item[0] + "?v=" + V;
+    s.async = false;
+    s.onload = function () {
+      done++;
+      bar.style.width = Math.round(done / TOTAL * 100) + "%";
+      if (done < TOTAL) setNote("正在加载 " + FILES[done][1] + "（" + done + "/" + TOTAL + "）");
+      step();
+    };
+    s.onerror = function () {
+      fail("「" + item[1] + "」加载失败，请检查网络后重试");
+    };
+    document.body.appendChild(s);
+  }
+
+  // 首个文件名字先显示出来
+  setNote("正在加载 " + FILES[0][1] + "（0/" + TOTAL + "）");
+  step();
+})();
+</script>
 </body>
 </html>
