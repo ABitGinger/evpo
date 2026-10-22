@@ -26,7 +26,7 @@
     src: S + " · P5–7",
     b: `<div class="plain">评价一台电机"好不好调速"，就看五件事：<b>能调多宽</b>（调速范围 D）、<b>高速能超多少</b>（转速因子 x）、<b>转速稳不稳</b>（静差率 δ）、<b>费不费电</b>（效率 η）、<b>调起来连不连续</b>（平滑性）。</div>
 <div class="kv">
-<div><span class="k">机械特性</span><span class="v">"转速 n 随转矩 T 怎么变"的那条曲线。横轴转速、纵轴转矩</span></div>
+<div><span class="k">机械特性</span><span class="v">"转速 n 随转矩 T 怎么变"的那条曲线：<b>纵轴是转速 n，横轴是转矩 T</b>（与四象限图同一套坐标）</span></div>
 <div><span class="k">负载特性</span><span class="v">"负载要的转矩 T<sub>L</sub> 随转速 n 怎么变"。电机特性与负载特性的<b>交点</b>就是实际工作点</span></div>
 <div><span class="k">调速范围 D</span><span class="v">最高转速 ÷ 最低转速，<b>D = n<sub>max</sub> / n<sub>min</sub></b>，越大越"能屈能伸"</span></div>
 <div><span class="k">转速因子 x</span><span class="v"><b>x = n<sub>max</sub> / n<sub>base</sub></b>：基速以上还能再快多少倍（基速通常就是额定转速）</span></div>
@@ -61,7 +61,33 @@
     id: "m4", m: "motor", t: "四象限运行：车什么时候在发电", s: 3,
     tag: "四象限 正向电动 正向制动 反向电动 反向制动 再生制动 回馈",
     src: S + " · P14、P46–49",
-    b: `<div class="plain">把"转速 n"当横轴、"转矩 T"当纵轴，平面分成四块。<b>转矩与转速同号 = 电机在出力（耗电）；异号 = 电机被拖着转（发电）</b>。汽车最关心第Ⅱ象限——下坡和刹车时的能量回收。</div>
+    b: `<div class="plain">按讲义/教材的坐标：<b>纵轴是转速 n（上正下负），横轴是负载转矩 T<sub>L</sub>（右正左负）</b>。转速与转矩<b>同号 = 电机在出力（耗电）</b>；<b>异号 = 电机被拖着转（发电）</b>。汽车最关心第Ⅱ象限——下坡和刹车时的能量回收。</div>
+<div class="fig">
+<svg viewBox="0 0 320 236" role="img" aria-label="四象限运行图：纵轴转速 n，横轴负载转矩 TL">
+  <line x1="18" y1="120" x2="300" y2="120" class="ax"/>
+  <polygon points="302,120 291,115.5 291,124.5" class="ar"/>
+  <line x1="160" y1="228" x2="160" y2="18" class="ax"/>
+  <polygon points="160,15 155.5,26 164.5,26" class="ar"/>
+  <text x="176" y="30" class="axl">n</text>
+  <text x="176" y="222" class="axl">−n</text>
+  <text x="288" y="110" class="axl" text-anchor="end">T<tspan font-size="8" dy="2">L</tspan></text>
+  <text x="30" y="110" class="axl">−T<tspan font-size="8" dy="2">L</tspan></text>
+  <text x="151" y="133" class="axl" text-anchor="end">0</text>
+  <g class="q-run"><text x="232" y="66" class="t1" text-anchor="middle">第 Ⅰ 象限</text>
+    <text x="232" y="82" class="t2" text-anchor="middle">正向电动</text>
+    <text x="232" y="96" class="t2" text-anchor="middle">（耗电出力）</text></g>
+  <g class="q-brk"><text x="88" y="66" class="t1" text-anchor="middle">第 Ⅱ 象限</text>
+    <text x="88" y="82" class="t2" text-anchor="middle">正向制动</text>
+    <text x="88" y="96" class="t2" text-anchor="middle">（发电回馈）</text></g>
+  <g class="q-run"><text x="88" y="152" class="t1" text-anchor="middle">第 Ⅲ 象限</text>
+    <text x="88" y="168" class="t2" text-anchor="middle">反向电动</text>
+    <text x="88" y="182" class="t2" text-anchor="middle">（倒车出力）</text></g>
+  <g class="q-brk"><text x="232" y="152" class="t1" text-anchor="middle">第 Ⅳ 象限</text>
+    <text x="232" y="168" class="t2" text-anchor="middle">反向制动</text>
+    <text x="232" y="182" class="t2" text-anchor="middle">（发电回馈）</text></g>
+</svg>
+<div class="cap">纵轴 = 转速 n ｜ 横轴 = 负载转矩 T<sub>L</sub> ｜ 绿 = 电动（耗电）· 橙 = 制动（发电）</div>
+</div>
 <div class="tw"><table>
 <thead><tr><th>象限</th><th>转速 n</th><th>转矩 T</th><th>状态</th><th>车上对应场景</th></tr></thead>
 <tbody>
@@ -70,7 +96,7 @@
 <tr><td>第 Ⅲ</td><td>−</td><td>−</td><td>反向电动</td><td>倒车</td></tr>
 <tr><td>第 Ⅳ</td><td>−</td><td>+</td><td>反向制动（发电回馈）</td><td>倒车中刹停</td></tr>
 </tbody></table></div>
-<div class="warn"><b>最常见的错</b>：以为下坡回馈在第Ⅳ象限。错——<b>下坡时车轮仍往前转（n&gt;0）</b>，只是电机反着出力（T&lt;0），所以在<b>第Ⅱ象限</b>。第Ⅳ象限是"反向转着还被往前拽"，比如重物下放。</div>
+<div class="warn"><b>最常见的错</b>：以为下坡回馈在第Ⅳ象限（那是横轴为 n 的画法）。按本课坐标（纵轴 n、横轴 T<sub>L</sub>），下坡回馈在<b>第Ⅱ象限</b>。错——<b>下坡时车轮仍往前转（n&gt;0）</b>，只是电机反着出力（T&lt;0），所以在<b>第Ⅱ象限</b>。第Ⅳ象限是"反向转着还被往前拽"，比如重物下放。</div>
 <p><b>三种制动方式，为什么只用一种</b></p>
 <div class="kv">
 <div><span class="k">能耗制动</span><span class="v">把电枢接到一个电阻上，动能变热烧掉 —— <b>能量全浪费</b>，车上不用</span></div>

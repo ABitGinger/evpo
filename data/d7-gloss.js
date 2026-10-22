@@ -79,7 +79,7 @@
     src: "02 电机",
     b: `<div class="plain">电机课本最爱用"特性软/硬""恒转矩/恒功率"这类词，其实都是<b>一句话能说清的事</b>。下面把它翻译成人话。</div>
 <div class="gloss">
-<div><span class="k">机械特性</span><span class="v">就是"<b>转速随转矩怎么变</b>"的一条线：横轴转速 n、纵轴转矩 T。电机有劲时转得快还是慢，看这条线</span></div>
+<div><span class="k">机械特性</span><span class="v">就是"<b>转速随转矩怎么变</b>"的一条线：<b>纵轴转速 n、横轴转矩 T</b>（和四象限图是同一套坐标）。电机有劲时转得快还是慢，看这条线</span></div>
 <div><span class="k">特性"硬"</span><span class="v">负载加大时<b>转速几乎不掉</b>（线很陡、很平）。适合需要稳定转速的场合</span></div>
 <div><span class="k">特性"软"</span><span class="v">负载一加大<b>转速就明显往下掉</b>（线很缓）。串励电机就是这样，起步劲大但速度不稳</span></div>
 <div><span class="k">恒转矩调速</span><span class="v">调速过程中<b>能输出的最大转矩不变</b>（比如降压调速）。因此功率随转速成正比变化：转得慢，出力也小</span></div>
@@ -98,7 +98,7 @@
 <div><span class="k">矢量控制</span><span class="v">把交流电机的电流"拆成两股"：一股专门建磁场、一股专门出转矩，<b>像直流电机那样分开管</b>。不拆就调不好</span></div>
 <div><span class="k">逆变</span><span class="v">直流 → 交流。车上电池是直流，交流电机要交流，所以必须有逆变器</span></div>
 <div><span class="k">PWM</span><span class="v">脉宽调制：用"快速开关"把直流斩成近似正弦的交流，<b>开关得越密，波形越接近正弦</b></span></div>
-<div><span class="k">四象限</span><span class="v">以转速为横轴、转矩为纵轴分成四块。正转+出力=Ⅰ，正转+制动=Ⅱ（下坡回馈就在这），反转+出力=Ⅲ，反转+制动=Ⅳ</span></div>
+<div><span class="k">四象限</span><span class="v"><b>纵轴转速 n、横轴负载转矩 T<sub>L</sub></b>分成四块：正转+出力=Ⅰ（正向电动），正转+制动=Ⅱ（<b>下坡回馈就在这</b>），反转+出力=Ⅲ（反向电动），反转+制动=Ⅳ</span></div>
 <div><span class="k">再生制动</span><span class="v">让电机反着当发电机用，把车的动能变回电充进电池，<b>而不是变成刹车片的热</b></span></div>
 <div><span class="k">转矩脉动</span><span class="v">输出的转矩忽大忽小（一顿一顿），会引起振动和噪声。开关磁阻电机最严重，正弦波驱动的永磁同步最小</span></div>
 <div><span class="k">双凸极</span><span class="v">定子和转子上<b>都开有凸出的齿</b>（像齿轮），开关磁阻电机就是这种结构</span></div>
