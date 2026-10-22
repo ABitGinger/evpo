@@ -1,276 +1,346 @@
-/* 模块四：驱动电机及其调速控制系统（讲义 02 · 第四章） */
+/* 模块四：驱动电机及其调速控制系统（讲义 02 · 第四章）
+   改写版：每个考点先给"一句话"，公式后必附符号与单位 */
 (function () {
   var I = window.EV.items, C = window.EV.cards;
   var S = "02 电机";
-  var L = function (num, den) {
-    return '<span class="fr"><b>' + num + "</b><u>" + den + "</u></span>";
-  };
 
   I.push({
     id: "m1", m: "motor", t: "四类驱动电机的特点对比（★首考）", s: 3,
-    tag: "直流 交流 永磁无刷 开关磁阻 对比 换向火花 矢量控制 转矩脉动",
+    tag: "直流 交流 永磁无刷 开关磁阻 对比 换向火花 矢量控制 转矩脉动 电刷",
     src: S + " · P4",
-    b: `<div class="tw"><table>
-<thead><tr><th>类型</th><th>优点</th><th>缺点</th></tr></thead>
+    b: `<div class="plain">车上要用的电机就四类。它们的差别本质上是<b>有没有电刷</b>和<b>靠什么建磁场</b>两件事决定的：有电刷就要维护、会打火花；磁场靠电流建就要耗电，靠永磁体就省电但怕高温。</div>
+<div class="tw"><table>
+<thead><tr><th>类型</th><th>优点</th><th>缺点（本质原因）</th></tr></thead>
 <tbody>
-<tr><td><b>直流电机</b></td><td>控制简单、成本低、技术成熟、调速性能好、过载能力强</td><td>有<b>电刷</b>：换向火花、电刷易磨损、需定期维护、结构复杂</td></tr>
-<tr><td><b>交流电机</b></td><td>坚固耐用、效率高、体积小、<b>免维护</b>、过载能力强、便宜</td><td>控制器需 DC→AC 逆变 + <b>矢量控制</b>变频调速，控制线路复杂、价格高</td></tr>
-<tr><td><b>永磁无刷电机</b></td><td>永磁励磁 → 效率与<b>功率密度</b>大幅提高；调速范围广、起动转矩大、免维护、寿命长</td><td>控制器复杂、成本较高；<b>永磁体受温度影响大</b>，可靠性不足、功率受限</td></tr>
-<tr><td><b>开关磁阻电机</b></td><td>结构简单、坚固可靠、成本低、调速范围宽、起动力矩大、过载能力强、效率较高、便于发电回馈与电磁制动；<b>特别适于重载起步、频繁起停、路况多变</b></td><td><b>转矩脉动大</b> → 振动与噪声大（现已有解法）</td></tr>
+<tr><td><b>直流电机</b></td><td>控制简单、成本低、技术成熟、调速性能好、过载能力强</td><td>有<b>电刷</b>：换向火花、电刷磨损、需定期维护（电流要靠电刷送进旋转的转子）</td></tr>
+<tr><td><b>交流电机</b></td><td>坚固耐用、效率高、体积小、<b>免维护</b>、过载能力强、便宜</td><td>控制器要用逆变器把直流变交流，还要做<b>矢量控制</b>，线路复杂、价格高</td></tr>
+<tr><td><b>永磁无刷电机</b></td><td>用永磁体建磁场 → 不用励磁电流 → 效率与<b>功率密度</b>高；调速范围广、起动转矩大、免维护</td><td>永磁体<b>怕高温</b>（超居里温度会退磁），可靠性受限；控制器复杂、成本较高</td></tr>
+<tr><td><b>开关磁阻电机</b></td><td>结构最简单（转子上什么都没有）、坚固、便宜、起动转矩大、调速宽、能四象限运行；<b>特别适合重载起步、频繁起停、路况多变</b></td><td><b>转矩脉动大</b> → 振动噪声大（一直没大规模上车的唯一硬伤）</td></tr>
 </tbody></table></div>
-<div class="tip"><b>术语约定</b>：仅电动功能称"电动机"；兼有电动与发电两功能简称"电机"。</div>`
+<div class="tip"><b>术语约定</b>：只能电动叫"电动机"；既能电动又能发电叫"电机"。车上都要能回收能量，所以叫"驱动电机"。</div>`
   });
 
   I.push({
-    id: "m2", m: "motor", t: "调速性能五个指标（含三个必背公式）", s: 3,
-    tag: "机械特性 负载特性 调速范围 转速因子 静差率 调速效率 平滑性",
+    id: "m2", m: "motor", t: "调速好坏的五个指标（含三个公式）", s: 3,
+    tag: "机械特性 负载特性 调速范围 转速因子 静差率 调速效率 平滑性 D x delta",
     src: S + " · P5–7",
-    b: `<div class="kv">
-<div><span class="k">机械特性</span><span class="v">转矩 T 与转速 n 的关系 n=f(T)。<b>斜率大 = 特性软</b>（转矩随转速变化大）；斜率小 = 特性硬</span></div>
-<div><span class="k">负载特性</span><span class="v">负载转矩 T<sub>L</sub> 随转速 n 变化的特性关系</span></div>
-<div><span class="k">调速范围 D</span><span class="v">D = n<sub>max</sub> / n<sub>min</sub></span></div>
-<div><span class="k">转速因子 x</span><span class="v">x = n<sub>max</sub> / n<sub>base</sub>（基速通常即额定转速 n<sub>e</sub>）</span></div>
-<div><span class="k">静差率 δ</span><span class="v">δ% = (n<sub>0</sub> − n<sub>e</sub>)/n<sub>0</sub> × 100%，即 Δn<sub>e</sub>/n<sub>0</sub>。特性越硬，δ 越小，相对稳定性越高</span></div>
-<div><span class="k">调速效率</span><span class="v">η = P<sub>2</sub>/P<sub>1</sub> = P<sub>2</sub>/(P<sub>2</sub>+ΔP)</span></div>
-<div><span class="k">平滑性</span><span class="v">有级（齿轮档位越多越平滑）vs 无级（纯电气控制）</span></div>
+    b: `<div class="plain">评价一台电机"好不好调速"，就看五件事：<b>能调多宽</b>（调速范围 D）、<b>高速能超多少</b>（转速因子 x）、<b>转速稳不稳</b>（静差率 δ）、<b>费不费电</b>（效率 η）、<b>调起来连不连续</b>（平滑性）。</div>
+<div class="kv">
+<div><span class="k">机械特性</span><span class="v">"转速 n 随转矩 T 怎么变"的那条曲线。横轴转速、纵轴转矩</span></div>
+<div><span class="k">负载特性</span><span class="v">"负载要的转矩 T<sub>L</sub> 随转速 n 怎么变"。电机特性与负载特性的<b>交点</b>就是实际工作点</span></div>
+<div><span class="k">调速范围 D</span><span class="v">最高转速 ÷ 最低转速，<b>D = n<sub>max</sub> / n<sub>min</sub></b>，越大越"能屈能伸"</span></div>
+<div><span class="k">转速因子 x</span><span class="v"><b>x = n<sub>max</sub> / n<sub>base</sub></b>：基速以上还能再快多少倍（基速通常就是额定转速）</span></div>
+<div><span class="k">静差率 δ</span><span class="v">空载到满载，<b>转速掉了百分之几</b>：δ = (n<sub>0</sub> − n<sub>e</sub>)/n<sub>0</sub> ×100%。δ 小 = 转速稳 = 特性硬</span></div>
+<div><span class="k">调速效率</span><span class="v">η = P<sub>2</sub>/P<sub>1</sub>（输出/输入）</span></div>
+<div><span class="k">平滑性</span><span class="v">有级（靠齿轮档位，档越多越平滑）vs 无级（纯电气调节，连续可调）</span></div>
 </div>
-<div class="tip"><b>低速/高速调速的分界</b>：低于基速用<b>降压恒转矩</b>调速，高于基速用<b>弱磁恒功率</b>调速。</div>
-<div class="warn"><b>转速因子必背</b>：永磁电机弱磁较难 <b>x = 2</b>；交流异步电机 <b>x = 4</b>；开关磁阻电机 <b>x = 6</b>。</div>`
+<div class="sym"><i>n</i><sub>max</sub> 最高转速（r/min）｜<i>n</i><sub>min</sub> 最低转速｜<i>n</i><sub>base</sub> 基速（通常为额定转速）｜<i>n</i><sub>0</sub> 理想空载转速（负载为零时的转速）｜<i>n</i><sub>e</sub> 额定转速｜<i>P</i><sub>1</sub> 输入功率｜<i>P</i><sub>2</sub> 输出功率</div>
+<div class="tip"><b>为什么要分基速上下两段</b>：基速以下电压还没到顶，靠<b>降压</b>调速，能出的转矩不变（恒转矩）；基速以上电压到顶了，只能<b>弱磁</b>让转速继续升，此时功率不变、转矩下降（恒功率）。</div>
+<div class="warn"><b>转速因子必背</b>：永磁电机弱磁难，<b>x = 2</b>；交流异步电机 <b>x = 4</b>；开关磁阻电机 <b>x = 6</b>。</div>`
   });
 
   I.push({
-    id: "m3", m: "motor", t: "汽车对驱动系统的要求：稳省快宽足 + 八大条", s: 3,
-    tag: "稳省快宽足 稳准快宽足 八大要求 峰值电流 电磁制动 跛脚回家",
+    id: "m3", m: "motor", t: "汽车对驱动系统的要求：稳省快宽足 + 八条", s: 3,
+    tag: "稳省快宽足 八大要求 峰值电流 电磁制动 跛脚回家 过载",
     src: S + " · P11–27",
-    b: `<p>数控机床伺服要求"<b>稳、准、快、宽、足</b>"；电动汽车把"准"换成"省"——<b>稳、省、快、宽、足</b>（稳定、节省电能、快速响应、宽调速范围、足够驱动力）。</p>
+    b: `<div class="plain">数控机床对伺服的要求是"<b>稳、准、快、宽、足</b>"；汽车把"准"换成"<b>省</b>"——车上电有限，省电就是省续航。</div>
+<div class="plain" style="background:transparent;border:0;padding:2px 0 0"><b>稳</b> 运行平稳 ｜ <b>省</b> 省电 ｜ <b>快</b> 响应快 ｜ <b>宽</b> 调速范围宽 ｜ <b>足</b> 驱动力足</div>
 <ol>
-<li><b>起动力矩大、过载能力强</b>（频繁起步、加速上坡短时过载）；</li>
-<li><b>限制峰值电流</b>小于蓄电池最大放电允许电流；</li>
-<li><b>调速范围宽</b>，且额定点附近效率高（可多级额定转速设计以简化传动）；</li>
-<li><b>能正反转</b>（倒车不必切换倒档齿轮）；</li>
-<li><b>能方便高效地发电回馈</b>（降速制动、下坡滑行回收动能）；</li>
-<li><b>兼具电磁制动功能</b>（定转子电磁吸力直接制动，响应极快，减少机械制动频率、避免热衰退）；</li>
-<li><b>调速响应快</b>；</li>
-<li><b>运行平稳、可靠性高</b>，具故障容错，能"<b>跛脚回家</b>"避免交通堵塞。</li>
+<li><b>起动力矩大、过载能力强</b>：频繁起步、加速上坡都要短时超载</li>
+<li><b>峰值电流受限</b>：不能超过蓄电池允许的最大放电电流，否则伤电池</li>
+<li><b>调速范围宽</b>，且额定点附近效率高（可设计多级额定转速以简化传动）</li>
+<li><b>能正反转</b>：倒车不用切倒档齿轮，电机反转即可</li>
+<li><b>能高效发电回馈</b>：降速制动、下坡滑行时把动能收回电池</li>
+<li><b>兼具电磁制动</b>：靠定转子间的电磁吸力直接制动，响应极快，减少机械刹车使用、避免<b>热衰退</b></li>
+<li><b>调速响应快</b>：这是 ABS/ESP 那种毫秒级控制的前提</li>
+<li><b>运行可靠、有故障容错</b>：坏了还能低速开回家，即"<b>跛脚回家</b>"，不至于堵在路上</li>
 </ol>`
   });
 
   I.push({
-    id: "m4", m: "motor", t: "四象限运行与再生制动", s: 3,
-    tag: "四象限 正向电动 正向制动 反向电动 反向制动 再生制动",
+    id: "m4", m: "motor", t: "四象限运行：车什么时候在发电", s: 3,
+    tag: "四象限 正向电动 正向制动 反向电动 反向制动 再生制动 回馈",
     src: S + " · P14、P46–49",
-    b: `<div class="tw"><table>
-<thead><tr><th>象限</th><th>n</th><th>T</th><th>状态</th></tr></thead>
+    b: `<div class="plain">把"转速 n"当横轴、"转矩 T"当纵轴，平面分成四块。<b>转矩与转速同号 = 电机在出力（耗电）；异号 = 电机被拖着转（发电）</b>。汽车最关心第Ⅱ象限——下坡和刹车时的能量回收。</div>
+<div class="tw"><table>
+<thead><tr><th>象限</th><th>转速 n</th><th>转矩 T</th><th>状态</th><th>车上对应场景</th></tr></thead>
 <tbody>
-<tr><td>第 Ⅰ</td><td>+</td><td>+</td><td>正向电动</td></tr>
-<tr><td>第 Ⅱ</td><td>+</td><td>−</td><td><b>正向制动（发电回馈）</b></td></tr>
-<tr><td>第 Ⅲ</td><td>−</td><td>−</td><td>反向电动</td></tr>
-<tr><td>第 Ⅳ</td><td>−</td><td>+</td><td>反向制动（发电回馈）</td></tr>
+<tr><td>第 Ⅰ</td><td>+</td><td>+</td><td>正向电动</td><td>正常前进</td></tr>
+<tr><td>第 Ⅱ</td><td>+</td><td>−</td><td><b>正向制动（发电回馈）</b></td><td><b>下坡滑行、减速刹车</b></td></tr>
+<tr><td>第 Ⅲ</td><td>−</td><td>−</td><td>反向电动</td><td>倒车</td></tr>
+<tr><td>第 Ⅳ</td><td>−</td><td>+</td><td>反向制动（发电回馈）</td><td>倒车中刹停</td></tr>
 </tbody></table></div>
-<div class="warn"><b>关键陷阱</b>：汽车<b>下坡时电机仍正转</b>，所以发电回馈制动发生在<b>第Ⅱ象限</b>，不是第Ⅳ象限（第Ⅳ是位能负载下放重物的反向回馈）。</div>
-<p><b>三种制动</b>：能耗制动（电枢串耗能电阻）、反接制动（电源极性反接+串电阻）——二者<b>不宜用于能源受限的电动汽车</b>；应采用<b>再生发电制动</b>。正向回馈原理：降低电源电压使 |E<sub>a</sub>| &gt; |U|，I<sub>a</sub> 反向，转矩变制动转矩，UI<sub>a</sub> &lt; 0，电机向电源馈电。</p>`
+<div class="warn"><b>最常见的错</b>：以为下坡回馈在第Ⅳ象限。错——<b>下坡时车轮仍往前转（n&gt;0）</b>，只是电机反着出力（T&lt;0），所以在<b>第Ⅱ象限</b>。第Ⅳ象限是"反向转着还被往前拽"，比如重物下放。</div>
+<p><b>三种制动方式，为什么只用一种</b></p>
+<div class="kv">
+<div><span class="k">能耗制动</span><span class="v">把电枢接到一个电阻上，动能变热烧掉 —— <b>能量全浪费</b>，车上不用</span></div>
+<div><span class="k">反接制动</span><span class="v">把电源极性反过来、靠串电阻限流 —— 冲击大、效率低，车上不用</span></div>
+<div><span class="k">再生制动</span><span class="v">让电机电动势高于电源电压，电流倒着流回电池 —— <b>动能变电能存起来</b>，电动车必须用这个</span></div>
+</div>
+<div class="read"><b>再生制动怎么发生的</b>：正常电动时 电源电压 <i>U</i> &gt; 电动势 <i>E</i><sub>a</sub>，电流从电源流向电机；要发电，就让 <i>E</i><sub>a</sub> &gt; <i>U</i>（降低电源电压或提高转速），电流反向，转矩跟着反向成为制动转矩，电能倒灌回电池。</div>`
   });
 
   I.push({
-    id: "m5", m: "motor", t: "五类负载特性与汽车行驶阻力的对应", s: 3,
+    id: "m5", m: "motor", t: "五类负载特性：车属于哪一种", s: 3,
     tag: "恒功率 反抗性恒转矩 位能性恒转矩 二次方律 直线律 风阻 坡度",
     src: S + " · P16–25",
-    b: `<div class="tw"><table>
-<thead><tr><th>负载特性</th><th>关系</th><th>典型实例</th></tr></thead>
-<tbody>
-<tr><td><b>恒功率</b></td><td>P<sub>L</sub> 恒定，T<sub>L</sub> ∝ 1/n（双曲线）</td><td>高速行驶工况</td></tr>
-<tr><td><b>反抗性恒转矩</b></td><td>T<sub>L</sub> 恒定（摩擦性），P ∝ n</td><td>起步、加速</td></tr>
-<tr><td><b>位能性恒转矩</b></td><td>T<sub>L</sub> 大小方向均恒定</td><td>上下坡（近似）</td></tr>
-<tr><td><b>二次方律</b></td><td>T<sub>L</sub> = K<sub>T</sub>n²，P ∝ n³（三次抛物线）</td><td>风机、水泵、螺旋桨；<b>空气阻力 F<sub>w</sub></b></td></tr>
-<tr><td><b>直线律</b></td><td>T<sub>L</sub> ∝ n，P ∝ n²（粘滞摩擦）</td><td>—</td></tr>
-</tbody></table></div>
-<div class="fm"><div class="eq"><i>P</i><sub>L</sub> = <i>T</i><sub>L</sub>ω = <span class="fr"><b>2π<i>n</i></b><u>60</u></span><i>T</i><sub>L</sub> = <span class="fr"><b><i>n T</i><sub>L</sub></b><u>9.55</u></span></div>
-<div class="note">恒功率 1/n；反抗性恒转矩 P∝n；二次方律 T∝n²、P∝n³；直线律 T∝n、P∝n²。</div></div>
-<div class="tip"><b>结论</b>：汽车为<b>多变型混合特性负载</b>——低速以 F<sub>f</sub>、F<sub>i</sub>、F<sub>j</sub>（恒转矩类）为主，高速以 F<sub>w</sub>（二次方律）为主，故通用工业调速系统难以全面满足要求。</div>`
-  });
-
-  I.push({
-    id: "m6", m: "motor", t: "直流电机：原理、结构、励磁四方式", s: 3,
-    tag: "电磁力 F=Bli 电磁感应 e=Blv 主磁极 换向极 电枢 换向器 他励 并励 串励 复励",
-    src: S + " · P26–35",
-    b: `<p><b>原理</b>：电动——载流导体受电磁力 <i>F</i> = <i>Bli</i>（左手定则）产生转矩；发电——导体切割磁力线 <i>e</i> = <i>Blv</i>（右手定则）。同一台电机改变外部条件即可电动/发电互换。</p>
-<p><b>结构</b>：定子（主磁极［极身+极掌+励磁绕组］、换向极［改善换向、减小火花］、机座、电刷装置）+ 转子（电枢铁心［0.5 mm 硅钢片］、电枢绕组、换向器）+ 气隙。</p>
+    b: `<div class="plain">"负载特性"就是<b>负载要多大劲、随转速怎么变</b>。工业上常见五类，汽车是<b>混着来的</b>：低速时坡度和摩擦说了算（像恒转矩），高速时风阻说了算（随速度平方涨）。</div>
 <div class="tw"><table>
-<thead><tr><th>励磁方式</th><th>接线</th><th>机械特性 / 用途</th></tr></thead>
+<thead><tr><th>负载类型</th><th>转矩随转速怎么变</th><th>功率怎么变</th><th>典型例子</th></tr></thead>
 <tbody>
-<tr><td><b>他励</b></td><td>励磁与电枢电源分开，可分别控制 I<sub>f</sub>、I<sub>a</sub></td><td>线性好、稳定，调速范围宽，可再生制动；<b>电动汽车直流方案首选</b></td></tr>
-<tr><td>并励</td><td>励磁绕组与电枢并联</td><td>特性与永磁直流电机相似</td></tr>
-<tr><td>串励</td><td>励磁绕组与电枢串联</td><td>起动转矩大、恒功率调速范围宽，但<b>特性软、加速性能差</b></td></tr>
-<tr><td>复励</td><td>并励+串励两个绕组</td><td>磁动势同向为积复励，反向为差复励</td></tr>
+<tr><td><b>恒功率</b></td><td>T ∝ 1/n（双曲线）</td><td>不变</td><td>高速巡航</td></tr>
+<tr><td><b>反抗性恒转矩</b></td><td>T 恒定，方向与转向相反</td><td>P ∝ n</td><td>起步、加速时的摩擦阻力</td></tr>
+<tr><td><b>位能性恒转矩</b></td><td>T 大小方向都不变</td><td>P ∝ n</td><td>上下坡（近似）</td></tr>
+<tr><td><b>二次方律</b></td><td>T ∝ n²</td><td>P ∝ n³</td><td>风机、水泵、螺旋桨、<b>空气阻力 F<sub>w</sub></b></td></tr>
+<tr><td><b>直线律</b></td><td>T ∝ n</td><td>P ∝ n²</td><td>粘滞摩擦</td></tr>
 </tbody></table></div>
-<div class="tip">并励、串励、复励通称<b>自励</b>。工程设想：起步用串励、其余工况用他励。</div>`
+<div class="fm"><div class="eq"><i>P</i><sub>L</sub> = <i>T</i><sub>L</sub> · <i>ω</i> = <span class="fr"><b>2π<i>n</i></b><u>60</u></span><i>T</i><sub>L</sub> = <span class="fr"><b><i>n</i> <i>T</i><sub>L</sub></b><u>9.55</u></span></div>
+<div class="note">功率 = 转矩 × 角速度。转速用 r/min、转矩用 N·m 时，除以 9.55 得到 W。</div></div>
+<div class="sym"><i>P</i><sub>L</sub> 负载功率（W）｜<i>T</i><sub>L</sub> 负载转矩（N·m）｜<i>ω</i> 角速度（rad/s）｜<i>n</i> 转速（r/min）｜9.55 = 60/2π</div>
+<div class="tip"><b>结论</b>：汽车是<b>多变型混合负载</b>——低速靠 F<sub>f</sub>、F<sub>i</sub>、F<sub>j</sub>（恒转矩类），高速靠 F<sub>w</sub>（二次方律）。所以通用工业调速系统搬上车不好用。</div>`
   });
 
   I.push({
-    id: "m7", m: "motor", t: "他励直流电机三大公式与机械特性方程", s: 3,
-    tag: "电枢电动势 电磁转矩 Ce CT 9.55 机械特性 斜率β 理想空载转速",
+    id: "m6", m: "motor", t: "直流电机：为什么会转、里面有什么、四种励磁", s: 3,
+    tag: "电磁力 F=Bli 电磁感应 e=Blv 左手定则 右手定则 主磁极 换向极 电刷 电枢 他励 并励 串励 复励",
+    src: S + " · P26–35",
+    b: `<div class="plain">直流电机就靠两句话：<b>通电的导线放在磁场里会被推</b>（所以转）；<b>导线在磁场里动会发电</b>（所以能回收）。同一台机器，通电流就转、被拖着转就发电。</div>
+<div class="fm"><div class="eq"><b>电动</b>：<i>F</i> = <i>B</i>·<i>l</i>·<i>i</i>　　　<b>发电</b>：<i>e</i> = <i>B</i>·<i>l</i>·<i>v</i></div></div>
+<div class="sym"><i>F</i> 电磁力（N，牛顿）｜<i>e</i> 感应电动势（V，伏）｜<i>B</i> 磁感应强度（T，特斯拉，磁场的"浓密程度"）｜<i>l</i> 导线在磁场中的有效长度（m）｜<i>i</i> 通过导线的电流（A）｜<i>v</i> 导线切割磁力线的速度（m/s）</div>
+<div class="read"><b>怎么读</b>：力 = 磁多强 × 导线多长 × 电流多大，三者相乘。<b>方向</b>：电动用<b>左手定则</b>（磁力线穿手心、四指指电流、拇指指受力方向）；发电用<b>右手定则</b>（磁力线穿手心、拇指指运动方向、四指指电流方向）。</div>
+<p><b>里面有什么（结构）</b></p>
+<div class="kv">
+<div><span class="k">主磁极</span><span class="v">产生工作磁场的磁铁，由 <b>极身</b>（绕励磁线圈的柱体）+ <b>极掌</b>（朝着气隙张开的那块，把磁力线"摊开"送进转子）+ 励磁绕组组成。<b>极掌就是磁极对着转子那一面的"脚掌"</b></span></div>
+<div><span class="k">换向极</span><span class="v">装在相邻两主磁极<b>中间</b>的小磁极，专门抵消换向火花</span></div>
+<div><span class="k">机座</span><span class="v">外壳，同时兼作磁路的一部分</span></div>
+<div><span class="k">电刷装置</span><span class="v">把外部电流"刷"进旋转的转子——<b>这就是要维护、会打火花的根源</b></span></div>
+<div><span class="k">电枢铁心</span><span class="v">转子上的硅钢片叠层（0.5 mm 一片，为了减小涡流损耗），开槽嵌绕组</span></div>
+<div><span class="k">换向器</span><span class="v">转子尾端的铜片环，配合电刷，让线圈电流在恰当时刻反向——"<b>换向</b>"就是这件事</span></div>
+</div>
+<p><b>四种励磁方式：看励磁绕组怎么接</b></p>
+<div class="tw"><table>
+<thead><tr><th>方式</th><th>接线</th><th>特点 / 用途</th></tr></thead>
+<tbody>
+<tr><td><b>他励</b></td><td>励磁电源与电枢电源<b>分开</b>，可独立调 I<sub>f</sub> 和 I<sub>a</sub></td><td>线性好、稳定、调速范围宽、能再生制动 → <b>电动车直流方案首选</b></td></tr>
+<tr><td>并励</td><td>励磁绕组与电枢<b>并联</b></td><td>特性与永磁直流电机相似（磁场基本不随负载变）</td></tr>
+<tr><td>串励</td><td>励磁绕组与电枢<b>串联</b></td><td>起动转矩大、恒功率范围宽，但<b>特性软</b>、高速不稳定</td></tr>
+<tr><td>复励</td><td>并励 + 串励<b>两套绕组都有</b></td><td>磁动势同向 = 积复励（磁场叠加）；反向 = 差复励</td></tr>
+</tbody></table></div>
+<div class="sym"><i>I</i><sub>f</sub> <b>励磁电流</b>（f = field 磁场）：专门用来建磁场的电流，决定磁通 <i>Φ</i> 的大小<br><i>I</i><sub>a</sub> <b>电枢电流</b>（a = armature 电枢）：流过转子的电流，决定转矩大小</div>
+<div class="tip">并励、串励、复励的磁场都由自己的电枢回路"自给"，统称<b>自励</b>。工程设想：起步用串励（劲大）、其余工况用他励（稳）。</div>`
+  });
+
+  I.push({
+    id: "m7", m: "motor", t: "他励直流电机的三个核心公式（逐符号拆解）", s: 3,
+    tag: "电枢电动势 电磁转矩 机械特性 理想空载转速 斜率 beta Ce CT 9.55",
     src: S + " · P37–39",
-    b: `<div class="fm"><div class="eq"><i>E</i><sub>a</sub> = <i>C</i><sub>e</sub>Φ<i>n</i> = <span class="fr"><b><i>pN</i></b><u>60<i>a</i></u></span>Φ<i>n</i>　　<i>T</i> = <i>C</i><sub>T</sub>Φ<i>I</i><sub>a</sub> = <span class="fr"><b><i>pN</i></b><u>2π<i>a</i></u></span>Φ<i>I</i><sub>a</sub></div>
-<div class="note">E<sub>a</sub> ∝ Φn；T ∝ ΦI<sub>a</sub>。<b>C<sub>T</sub> = 9.55 C<sub>e</sub></b>（因 60/2π = 9.55）。p 极对数、N 总导体数、a 支路对数。</div></div>
+    b: `<div class="plain">这三个公式说的是同一台电机的三件事：<b>转多快会产生多大电压</b>、<b>通多大电流会产生多大劲</b>、<b>加上负载后转速会掉多少</b>。字母虽多，真正会变的只有电压 U、磁通 Φ、电流 I<sub>a</sub>、转速 n 这四个。</div>
+<p><b>① 电动势公式：转起来就有电压</b></p>
+<div class="fm"><div class="eq"><i>E</i><sub>a</sub> = <i>C</i><sub>e</sub> Φ <i>n</i> = <span class="fr"><b><i>pN</i></b><u>60<i>a</i></u></span> Φ <i>n</i></div></div>
+<div class="sym"><i>E</i><sub>a</sub> 电枢电动势（V）——电机转动时自己"发"出来的电压<br><i>Φ</i> 每极磁通（Wb）——磁场强弱<br><i>n</i> 转速（r/min）<br><i>C</i><sub>e</sub> 电动势常数 = <i>pN</i>/60<i>a</i>，<b>电机造好后就是定值</b><br><i>p</i> 极对数（磁极数÷2，4 极电机 p=2）｜<i>N</i> 电枢总导体数（有效导线根数）｜<i>a</i> 支路对数（并联支路数÷2）</div>
+<div class="read"><b>怎么读</b>：<b>转得越快（n 大）、磁越强（Φ 大），发出的电压越高</b>，成正比。这解释了两件事——为什么起动瞬间电流很大（n 小则 E 小，U−E 的差值全压在电阻上）、为什么弱磁能提速（Φ 小了，同样电压对应更高 n）。</div>
+<p><b>② 转矩公式：通电流就有劲</b></p>
+<div class="fm"><div class="eq"><i>T</i> = <i>C</i><sub>T</sub> Φ <i>I</i><sub>a</sub> = <span class="fr"><b><i>pN</i></b><u>2π<i>a</i></u></span> Φ <i>I</i><sub>a</sub>　　<i>C</i><sub>T</sub> = 9.55 <i>C</i><sub>e</sub></div></div>
+<div class="sym"><i>T</i> 电磁转矩（N·m）｜<i>I</i><sub>a</sub> 电枢电流（A）｜<i>C</i><sub>T</sub> 转矩常数（结构决定，定值）｜9.55 = 60/(2π)，把"转/分"换成"弧度/秒"的换算系数</div>
+<div class="read"><b>怎么读</b>：<b>磁越强、电流越大，劲越大</b>。想要大起动转矩，要么加大电流（受电池限制），要么加强磁场。</div>
+<p><b>③ 机械特性：为什么带载会掉速</b></p>
 <div class="fm"><div class="eq">电压平衡：<i>U</i> = <i>E</i><sub>a</sub> + (<i>R</i><sub>a</sub> + <i>R</i><sub>c</sub>)<i>I</i><sub>a</sub></div>
-<div class="eq" style="margin-top:6px"><i>n</i> = <span class="fr"><b><i>U</i></b><u><i>C</i><sub>e</sub>Φ</u></span> − <span class="fr"><b>(<i>R</i><sub>a</sub>+<i>R</i><sub>c</sub>)</b><u><i>C</i><sub>e</sub><i>C</i><sub>T</sub>Φ<sup>2</sup></u></span><i>T</i> = <i>n</i><sub>0</sub> − β<i>T</i></div>
-<div class="note">理想空载转速 n<sub>0</sub> = U/(C<sub>e</sub>Φ)；斜率 β = (R<sub>a</sub>+R<sub>c</sub>)/(C<sub>e</sub>C<sub>T</sub>Φ²)。<b>β 与 Φ² 成反比</b>——这是弱磁使特性变软的根源。</div></div>`
+<div class="eq" style="margin-top:6px"><i>n</i> = <span class="fr"><b><i>U</i></b><u><i>C</i><sub>e</sub>Φ</u></span> − <span class="fr"><b>(<i>R</i><sub>a</sub>+<i>R</i><sub>c</sub>)</b><u><i>C</i><sub>e</sub><i>C</i><sub>T</sub>Φ<sup>2</sup></u></span><i>T</i> = <i>n</i><sub>0</sub> − β<i>T</i></div></div>
+<div class="sym"><i>U</i> 电源端电压（V）｜<i>R</i><sub>a</sub> 电枢绕组自身电阻（Ω）｜<i>R</i><sub>c</sub> 人为串入的附加电阻（Ω）<br><i>n</i><sub>0</sub> = <i>U</i>/(<i>C</i><sub>e</sub>Φ) <b>理想空载转速</b>：一点负载都没有时的转速（公式里第一项）<br><i>β</i> = (<i>R</i><sub>a</sub>+<i>R</i><sub>c</sub>)/(<i>C</i><sub>e</sub><i>C</i><sub>T</sub>Φ²) <b>机械特性斜率</b>：每增加 1 N·m 转矩，转速掉多少 r/min</div>
+<div class="read"><b>怎么读</b>：把转速拆成两段——<b>"空载能转多快"减去"带载后被拽下来多少"</b>。<i>β</i> 就是"被拽的力度"：<i>β</i> 小 = 带载几乎不掉速（特性硬）；<i>β</i> 大 = 一带载就掉速（特性软）。</div>
+<div class="tip"><b>为什么弱磁会让特性变软</b>：<i>β</i> 的分母里有 <b>Φ²</b>。弱磁使 Φ 变小 → Φ² 掉得更快 → <i>β</i> 变大 → 特性变软。这就是"弱磁使特性变软的根源"。</div>`
   });
 
   I.push({
     id: "m8", m: "motor", t: "三种调速方法与弱磁飞车", s: 3,
-    tag: "降压调速 弱磁调速 串电阻 恒转矩 恒功率 飞车 1~2倍",
+    tag: "降压调速 弱磁调速 串电阻 恒转矩 恒功率 飞车 1到2倍 基速",
     src: S + " · P40–45",
-    b: `<div class="tw"><table>
-<thead><tr><th>方法</th><th>改变量</th><th>性质</th><th>特点</th></tr></thead>
+    b: `<div class="plain">想改转速，公式里只有两条路：<b>改电压 U</b>（往下调，转速变慢）或<b>改磁通 Φ</b>（往小调，转速变快）。前者劲不变，后者劲跟着变小。</div>
+<div class="tw"><table>
+<thead><tr><th>方法</th><th>改什么</th><th>性质</th><th>特点</th></tr></thead>
 <tbody>
-<tr><td><b>降压调速</b></td><td>U（保持 Φ 额定、不串电阻）</td><td><b>恒转矩</b></td><td>特性与固有特性<b>平行</b>、硬度不变；从基速向下无级调速，可到零速</td></tr>
-<tr><td><b>弱磁调速</b></td><td>I<sub>f</sub> ↓ → Φ ↓（U=U<sub>e</sub>）</td><td><b>恒功率</b></td><td>n<sub>0</sub> ∝ 1/Φ 上升、Δn ∝ 1/Φ² 上升；从基速向上调速，控制方便、功耗小</td></tr>
-<tr><td>串电阻</td><td>R<sub>c</sub> 逐级增加</td><td>—</td><td>可减小起动电流，但特性变软、功耗增加，<b>现很少采用</b></td></tr>
+<tr><td><b>降压调速</b></td><td>降低 <i>U</i>（Φ 保持额定、不串电阻）</td><td><b>恒转矩</b>：能出的最大转矩不变</td><td>特性曲线与原来<b>平行</b>、硬度不变；从基速往下无级可调，能一直调到零速</td></tr>
+<tr><td><b>弱磁调速</b></td><td>减小 <i>I</i><sub>f</sub> → Φ 变小（<i>U</i> 保持额定）</td><td><b>恒功率</b>：功率不变、转矩下降</td><td>从基速往上调；控制方便、损耗小，但只能升到额定转速的 1~2 倍</td></tr>
+<tr><td>串电阻</td><td>加大 <i>R</i><sub>c</sub></td><td>—</td><td>能限起动电流，但特性变软、电阻上白烧能量，<b>现在基本不用</b></td></tr>
 </tbody></table></div>
-<div class="warn"><b>弱磁必须互锁保护</b>：若 I<sub>f</sub> = 0，则 Φ → 0，n → ∞ 产生<b>飞车</b>。</div>
-<p>弱磁升速上限受<b>换向条件与机械强度</b>限制：一般只能升到 n<sub>e</sub> 的 <b>1~2 倍</b>，特制调速电机可达 <b>3~4 倍</b>。<br>电动汽车常用<b>降压 + 弱磁</b>组合，得到低速恒转矩、高速恒功率的调速特性。</p>`
+<div class="read"><b>为什么弱磁能提速</b>：由 <i>n</i> = <i>U</i>/(<i>C</i><sub>e</sub>Φ) 可见，<b>Φ 在分母上</b>，Φ 减半、转速翻倍。代价是 <i>T</i> = <i>C</i><sub>T</sub>Φ<i>I</i><sub>a</sub> 里 Φ 也变小，劲跟着变小——这正是"恒功率"：转速上去了，力矩就得让出来。</div>
+<div class="warn"><b>弱磁必须做互锁保护</b>：万一励磁电流掉到零（断线、接触不良），Φ→0，则 n→<b>无穷大</b>，电机"<b>飞车</b>"解体。控制上要保证"先有励磁、再给电枢电压"，励磁一失立刻切断电枢。</div>
+<p><b>弱磁能升多少倍</b>：受<b>换向条件</b>（火花）与<b>机械强度</b>（转子离心力）限制，一般只能到额定转速的 <b>1~2 倍</b>，特制调速电机可到 <b>3~4 倍</b>。<br>电动汽车常用<b>降压 + 弱磁</b>组合：低速段恒转矩（爬坡有劲），高速段恒功率（能跑快）。</p>`
   });
 
   I.push({
-    id: "m9", m: "motor", t: "交流电机：旋转磁场、转差率与三种运行状态", s: 3,
-    tag: "旋转磁场 120度 同步转速 转差率 反接制动 发电机状态",
+    id: "m9", m: "motor", t: "交流电机：旋转磁场、转差率与三种状态", s: 3,
+    tag: "旋转磁场 120度 同步转速 转差率 反接制动 发电机状态 异步",
     src: S + " · P52–55",
-    b: `<p>与直流电机的区别主要在磁场：交流电机靠<b>旋转磁场</b>，直流电机为静止磁场。三相绕组空间互差 120°，通入相位互差 120° 的对称正弦电流即产生旋转磁场。</p>
-<div class="fm"><div class="eq"><i>n</i><sub>0</sub> = <span class="fr"><b>60<i>f</i></b><u><i>p</i></u></span>　　<i>s</i> = <span class="fr"><b><i>n</i><sub>0</sub> − <i>n</i></b><u><i>n</i><sub>0</sub></u></span>　　<i>n</i> = (1 − <i>s</i>)<span class="fr"><b>60<i>f</i></b><u><i>p</i></u></span></div>
-<div class="note">转差率 s 是异步电机最重要运行参数；额定负载时 <b>s ≈ 1%~6%</b>（s 越小越接近同步转速、效率越高）。</div></div>
+    b: `<div class="plain">交流电机没有电刷，它的磁场不是磁铁给的，而是<b>三相电流轮流"推"出来的一个旋转磁场</b>。转子被这个磁场带着跑，但永远<b>追不上</b>——追上了就没有相对运动，也就没有转矩了。</div>
+<p><b>旋转磁场怎么来的</b>：三个绕组在空间上互差 <b>120°</b>，通入相位也互差 <b>120°</b> 的三相交流电，合成磁场就在空间里匀速旋转。</p>
+<div class="fm"><div class="eq"><i>n</i><sub>0</sub> = <span class="fr"><b>60<i>f</i></b><u><i>p</i></u></span>　　<i>s</i> = <span class="fr"><b><i>n</i><sub>0</sub> − <i>n</i></b><u><i>n</i><sub>0</sub></u></span>　　<i>n</i> = (1 − <i>s</i>)<span class="fr"><b>60<i>f</i></b><u><i>p</i></u></span></div></div>
+<div class="sym"><i>n</i><sub>0</sub> <b>同步转速</b>（r/min）——旋转磁场的转速<br><i>f</i> 电源频率（Hz），我国工频 50 Hz｜<i>p</i> 极对数（4 极电机 p=2）<br><i>n</i> 转子实际转速（r/min）｜<i>s</i> <b>转差率</b>：转子比磁场慢多少（无量纲，0~1）</div>
+<div class="read"><b>算个数就懂了</b>：50 Hz、2 极对（4 极）电机，<i>n</i><sub>0</sub> = 60×50/2 = <b>1500 r/min</b>；若实测转子 1440 r/min，则 <i>s</i> = (1500−1440)/1500 = <b>4%</b>，正好落在正常的 1%~6% 区间。</div>
 <div class="tw"><table>
 <thead><tr><th>状态</th><th>转速</th><th>转差率</th><th>能量流向</th></tr></thead>
 <tbody>
-<tr><td>电动机</td><td>0 &lt; n &lt; n<sub>0</sub></td><td>0 &lt; s &lt; 1</td><td>吸收电功率，输出机械功率</td></tr>
-<tr><td><b>发电机</b></td><td>n &gt; n<sub>0</sub></td><td><b>s &lt; 0</b></td><td>吸收机械功率，输出电功率（回馈）</td></tr>
-<tr><td>反接制动</td><td>n &lt; 0</td><td><b>s &gt; 1</b></td><td>既吸电又吸机械功率，全部变内部损耗</td></tr>
+<tr><td>电动机</td><td>0 &lt; n &lt; n<sub>0</sub></td><td>0 &lt; s &lt; 1</td><td>吸电 → 出机械功</td></tr>
+<tr><td><b>发电机</b></td><td>n &gt; n<sub>0</sub></td><td><b>s &lt; 0</b></td><td>吸机械功 → 发电（回馈）</td></tr>
+<tr><td>反接制动</td><td>n &lt; 0</td><td><b>s &gt; 1</b></td><td>既吸电又吸机械功，全成内部损耗</td></tr>
 </tbody></table></div>
-<div class="tip">电动汽车降速制动时 n 不可能升高，故靠<b>降低电源频率 f 使 n<sub>0</sub> 下降</b>来实现 s&lt;0 发电回馈。</div>`
+<div class="tip">车上降速时转子不可能自己超过同步转速，所以靠<b>把电源频率 f 调低</b>，让 <i>n</i><sub>0</sub> 掉到转子转速以下，才实现 s&lt;0 的回馈发电。</div>`
   });
 
   I.push({
-    id: "m10", m: "motor", t: "异步电机结构、铭牌与起动特性", s: 2,
-    tag: "笼型 绕线型 铸铝 铜排 铭牌 堵转 4~7倍 星三角",
+    id: "m10", m: "motor", t: "异步电机的结构、铭牌与起动无力", s: 2,
+    tag: "笼型 绕线型 铸铝 铜排 铭牌 堵转 4到7倍 起动转矩 星三角",
     src: S + " · P56–60",
-    b: `<p><b>结构</b>：定子（铁芯 0.35~0.5 mm 硅钢片、三相绕组星/角接、机座）+ 转子（铁芯、绕组、转轴）+ 气隙（越小励磁电流越小、功率因数越高）。转子分<b>笼型</b>（铸铝式 / 铜排式，铜导电率远高于铝，电动车多用铜甚至铜银合金）与<b>绕线型</b>（转子串外接电阻调特性）。</p>
-<p><b>铭牌</b>：额定功率 P<sub>e</sub>（轴端输出）、额定电压 U<sub>e</sub>（线电压）、额定电流 I<sub>e</sub>（线电流）、额定转速 n<sub>e</sub>、额定频率 f<sub>e</sub>（我国工频 <b>50 Hz</b>）。</p>
-<div class="warn"><b>固有起动特性差</b>：堵转时起动电流约为额定值的 <b>4~7 倍</b>，而起动转矩仅 <b>1~1.5 倍</b> —— "电流大、转矩不大"，且大电流易损坏蓄电池。降压或 Y-Δ 切换虽减小起动电流，但<b>起动转矩同时减小</b>。</div>`
+    b: `<div class="plain">异步电机（也叫感应电机）是工业上最皮实的电机。它的问题是<b>一起步就要吃掉 4~7 倍额定电流，却只出 1~1.5 倍额定转矩</b>——干吃电不出活，对电池很不友好。</div>
+<div class="kv">
+<div><span class="k">定子</span><span class="v">0.35~0.5 mm 硅钢片叠成的铁芯、三相绕组（星形或三角形接法）、机座</span></div>
+<div><span class="k">转子</span><span class="v"><b>笼型</b>：像"鼠笼"，导条两端用端环短接——铸铝式（便宜）或铜排式（导电率远高于铝，电动车多用铜甚至铜银合金）；<b>绕线型</b>：转子也绕三相绕组，可外串电阻改特性</span></div>
+<div><span class="k">气隙</span><span class="v">越小越好：气隙小 → 励磁电流小 → 功率因数高</span></div>
+</div>
+<div class="sym"><i>P</i><sub>e</sub> 额定功率（轴端输出，kW）｜<i>U</i><sub>e</sub> 额定电压（线电压，V）｜<i>I</i><sub>e</sub> 额定电流（线电流，A）｜<i>n</i><sub>e</sub> 额定转速（r/min）｜<i>f</i><sub>e</sub> 额定频率（我国 50 Hz）</div>
+<div class="warn"><b>固有起动特性差</b>：堵转（转子被卡住不转）时起动电流约为额定的 <b>4~7 倍</b>，起动转矩却只有 <b>1~1.5 倍</b>。降压或 Y-Δ 切换虽能减小起动电流，但<b>起动转矩会同时按平方减小</b>——治标不治本，所以电动车要靠变频器 + 矢量控制。</div>`
   });
 
   I.push({
-    id: "m11", m: "motor", t: "矢量控制与变频调速（调频兼调压）", s: 3,
-    tag: "矢量控制 Blaschke 磁场定向 磁通检测 转差频率 U/f 恒转矩 恒功率 4.44",
+    id: "m11", m: "motor", t: "矢量控制与变频调速：为什么要调频又调压", s: 3,
+    tag: "矢量控制 磁场定向 Blaschke 磁通检测 转差频率 U/f 4.44 恒磁通 弱磁",
     src: S + " · P61–65",
-    b: `<p><b>矢量控制原理</b>：直流电机 T = C<sub>T</sub>ΦI<sub>a</sub> 中 Φ 由 i<sub>f</sub> 独立决定、与 i<sub>a</sub> 无关，故可分别调节 i<sub>a</sub>、i<sub>f</sub> 实现转矩与磁通解耦控制。1970 年代初德国西门子 <b>F. Blaschke</b> 首次提出按<b>磁场定向</b>的矢量变换控制。</p>
-<p><b>两种方法</b>（按获取位置角 θ 的方式）：<b>磁通检测法</b>（霍尔元件或检测定子端电压/感应电压直接得 θ，与电机常数无关，但受低速槽脉动与磁饱和影响）与<b>转差频率（sf）控制法</b>（θ = 转子位置 θ<sub>m</sub> + 滑差角 θ<sub>s</sub>，适用标准结构电机、调速范围广）。</p>
-<div class="fm"><div class="eq"><i>n</i> = (1 − <i>s</i>)<span class="fr"><b>60<i>f</i></b><u><i>p</i></u></span>　→　三类调速：变 <b>f</b>、变极对数 <b>p</b>、变转差率 <b>s</b></div>
-<div class="note">变极对数只有二级有级调速；变 s（降压、串电抗、转差离合器、转子串阻）特性变软、范围窄；<b>变频调速</b>可平滑无级。</div></div>
-<div class="fm"><div class="eq"><i>U</i><sub>1</sub> ≈ <i>E</i><sub>1</sub> = 4.44<i>f N</i><sub>1</sub><i>k</i><sub>1</sub>Φ　　<i>T</i> = <i>C</i><sub>M</sub>Φ<i>I</i><sub>2</sub>′cosψ<sub>2</sub></div>
-<div class="note"><b>必须调频兼调压</b>：U<sub>1</sub> 不变而 f 下降 → Φ 增大 → 磁路饱和、励磁电流 I<sub>m</sub> 上升、铁损剧增。故恒转矩负载要求 <b>E<sub>1</sub>/f = 常数</b>，恒功率负载要求 <b>U<sub>1</sub>/√f = 常数</b>。</div></div>`
+    b: `<div class="plain">直流电机好控制，是因为"建磁场的电流"和"出力的电流"两股分开、能各调各的。交流电机只有一路三相电流，于是有人想了个办法：<b>把这路电流在数学上拆成两股</b>，一股管磁场、一股管转矩——这就是矢量控制。</div>
+<p><b>为什么叫"矢量"</b>：交流量的大小和相位都在变，用矢量才能同时表示。按<b>磁场方向</b>把电流分解成"励磁分量"和"转矩分量"，就等效成了直流电机。</p>
+<div class="kv">
+<div><span class="k">磁通检测法</span><span class="v">用霍尔元件或测端电压，直接测出磁场位置角 θ。与电机参数无关，但低速时受齿槽脉动、磁饱和影响</span></div>
+<div><span class="k">转差频率法</span><span class="v">不直接测磁场，用"转子位置 θ<sub>m</sub> + 滑差角 θ<sub>s</sub>"算出来。适用于标准结构电机，调速范围广，工业上常用</span></div>
+</div>
+<div class="fm"><div class="eq"><i>n</i> = (1 − <i>s</i>) <span class="fr"><b>60<i>f</i></b><u><i>p</i></u></span>　→　调速只有三条路：变 <b>f</b>、变 <b>p</b>、变 <b>s</b></div>
+<div class="note">变极对数 p：只能有级跳变；变转差率 s：特性变软、范围窄；<b>变频 f：可平滑无级</b>——所以现代变频调速是主流。</div></div>
+<div class="fm"><div class="eq"><i>U</i><sub>1</sub> ≈ <i>E</i><sub>1</sub> = 4.44 <i>f</i> <i>N</i><sub>1</sub> <i>k</i><sub>1</sub> Φ</div></div>
+<div class="sym"><i>U</i><sub>1</sub> 定子相电压（V）｜<i>E</i><sub>1</sub> 定子感应电动势（V）｜<i>f</i> 频率（Hz）｜<i>N</i><sub>1</sub> 每相串联匝数｜<i>k</i><sub>1</sub> 绕组系数（约 0.9）｜Φ 每极磁通（Wb）｜4.44 = 2π/√2，正弦有效值换算常数</div>
+<div class="read"><b>怎么读</b>：电压 ≈ 4.44 × 频率 × 匝数 × Φ。<b>匝数是定值</b>，所以"电压 ÷ 频率"正比于磁通 Φ。若只降频不降压，<b>Φ 就会变大</b> → 铁芯饱和 → 励磁电流暴涨、铁损剧增、电机过热。</div>
+<div class="tip"><b>所以必须"调频兼调压"</b>：恒转矩负载保持 <b>U/f = 常数</b>（磁通恒定、转矩能力不变）；恒功率负载保持 <b>U/√f = 常数</b>（进入弱磁区提速）。</div>`
   });
 
   I.push({
     id: "m12", m: "motor", t: "永磁电机的分类与转子三大结构", s: 3,
     tag: "永磁 有刷 无刷直流 矩形波 永磁同步 正弦波 复合 IPM SPM ITPM 磁阻转矩",
     src: S + " · P67–71",
-    b: `<div class="tw"><table>
-<thead><tr><th>分类</th><th>驱动波形 / 说明</th></tr></thead>
+    b: `<div class="plain">"永磁"就是把励磁绕组换成永久磁铁，省掉那部分电流。按<b>电流波形</b>分两派：方波驱动叫无刷直流，正弦波驱动叫永磁同步。正弦波那派运转更平顺、更容易往高速扩。</div>
+<div class="tw"><table>
+<thead><tr><th>分类</th><th>驱动波形 / 关键差别</th></tr></thead>
 <tbody>
-<tr><td>永磁有刷直流</td><td>定子主磁极换永磁体，仍靠电刷机械换向</td></tr>
-<tr><td><b>永磁无刷直流（BLDCM）</b></td><td><b>矩形波</b>（正负交变）驱动，电子换向</td></tr>
-<tr><td><b>永磁交流同步（PMSM）</b></td><td><b>正弦波</b>驱动，转矩脉动小、可弱磁扩速</td></tr>
-<tr><td>变磁阻双凸极永磁 / 永磁复合</td><td>磁场 = 永磁体 + 电励磁（附加励磁以克服磁通不可控）</td></tr>
+<tr><td>永磁有刷直流</td><td>磁极换永磁体，但<b>仍靠电刷</b>机械换向——只省了励磁，没解决电刷</td></tr>
+<tr><td><b>永磁无刷直流 BLDCM</b></td><td><b>矩形波</b>（方波）电流驱动，电子换向。控制简单、成本低，但<b>换相时转矩脉动大</b></td></tr>
+<tr><td><b>永磁同步 PMSM</b></td><td><b>正弦波</b>电流驱动，转矩平顺、噪声小、易弱磁扩速；控制器更复杂</td></tr>
+<tr><td>双凸极永磁 / 永磁复合</td><td>永磁 + 电励磁混合，用来弥补"永磁磁场不可调"的缺点</td></tr>
 </tbody></table></div>
 <div class="kv">
-<div><span class="k">IPM 内置式</span><span class="v">磁阻转矩型，功率密度与过载能力高、<b>易弱磁扩速</b>，但转矩脉动大于 SPM</span></div>
-<div><span class="k">SPM 表面式</span><span class="v">结构简单，永磁体离气隙近、有效气隙磁场大，可降低电枢反应；应用渐增</span></div>
-<div><span class="k">ITPM 镶嵌式</span><span class="v">工艺复杂，永磁体嵌入内部，<b>高速运转时机械完整性好</b></span></div>
+<div><span class="k">SPM 表面式</span><span class="v">磁铁贴在转子<b>表面</b>（Surface）。结构简单、磁铁离气隙近、磁场强；高速时磁铁有被甩脱的风险</span></div>
+<div><span class="k">IPM 内置式</span><span class="v">磁铁埋进转子<b>内部</b>（Interior）。除永磁转矩外，还能额外获得"<b>磁阻转矩</b>"（转子凸起结构被磁场拽），所以更省电、过载强、<b>易弱磁扩速</b>；代价是转矩脉动大些</span></div>
+<div><span class="k">ITPM 镶嵌式</span><span class="v">磁铁嵌在转子表面开槽里（Inset）。工艺复杂，但高速时机械强度好</span></div>
 </div>
-<div class="tip">内置于径向型漏磁小、无需隔离环，但每极有效面积约为切向型的一半（故常用特殊截面补偿）。</div>`
+<div class="tip"><b>记法</b>：S=Surface 表面（贴在外）、I=Interior 内部（埋进去）、Inset 镶嵌（嵌在槽里）。<b>越往"里"，越耐高速、越能弱磁。</b></div>`
   });
 
   I.push({
-    id: "m13", m: "motor", t: "永磁材料：磁滞回线四要素与三大类", s: 3,
+    id: "m13", m: "motor", t: "永磁材料：磁滞回线上的四个关键词", s: 3,
     tag: "Br 剩磁 Hc 矫顽力 BHmax 磁能积 居里温度 软磁 硬磁 钕铁硼 钐钴 铁氧体 铝镍钴",
     src: S + " · P72–78",
-    b: `<div class="kv">
-<div><span class="k">B<sub>r</sub> 剩磁</span><span class="v">外磁场降为零时磁钢中的 B</span></div>
-<div><span class="k">H<sub>C</sub> 矫顽力</span><span class="v">使 B = 0 所需的去磁磁场强度</span></div>
-<div><span class="k">BH<sub>max</sub></span><span class="v">去磁曲线上 BH 乘积最大值（最大磁能积）；<b>越大，同等磁场所需材料体积越小</b></span></div>
-<div><span class="k">居里温度</span><span class="v">超过则完全失去磁性；永磁电机<b>不宜长时间过载与高温运行</b></span></div>
+    b: `<div class="plain">评价一块永磁材料就看四个数：<b>不充磁还剩多少磁</b>（剩磁 B<sub>r</sub>）、<b>多难被消磁</b>（矫顽力 H<sub>C</sub>）、<b>同样效果能省多少体积</b>（磁能积 BH<sub>max</sub>）、<b>多热会失效</b>（居里温度）。</div>
+<div class="kv">
+<div><span class="k">B<sub>r</sub> 剩磁</span><span class="v">外磁场撤掉后，材料里还留着的磁感应强度（T）。<b>越大 = 磁越强</b></span></div>
+<div><span class="k">H<sub>C</sub> 矫顽力</span><span class="v">要把 B 压到零需要多强的反向磁场（A/m）。<b>越大 = 越不容易被消磁、越耐高温和电枢反应</b></span></div>
+<div><span class="k">BH<sub>max</sub> 磁能积</span><span class="v">去磁曲线上 B×H 的最大值。含义很实在：<b>同样强的磁场，用它只需要更小的体积</b></span></div>
+<div><span class="k">居里温度</span><span class="v">超过它就<b>彻底失去磁性</b>。所以永磁电机不耐长时间过载和高温</span></div>
 </div>
-<div class="warn"><b>软磁 vs 硬磁</b>：硬磁（永磁体）H<sub>C</sub> 大、磁滞回线<b>宽</b>，要求 <b>H<sub>C</sub> &gt; 1 kA/m</b>；软磁 H<sub>C</sub> 很小、回线窄、B 随 H 变化大，作变压器与电机铁心。<b>bc 段为去磁曲线</b>，是永磁材料的主要磁特性曲线。</div>
+<div class="warn"><b>软磁 vs 硬磁（判据就一个）</b>：看矫顽力 <i>H</i><sub>C</sub>——<b>硬磁</b>（永磁体）H<sub>C</sub> 大、磁滞回线<b>宽</b>，要求 <b>H<sub>C</sub> &gt; 1 kA/m</b>；<b>软磁</b> H<sub>C</sub> 很小、回线窄、B 随 H 变化大，用来做变压器和电机的<b>铁心</b>。<br>磁滞回线上的 <b>bc 段叫"去磁曲线"</b>：永磁体工作时没有外加励磁，就工作在<b>这一段</b>上。</div>
 <div class="tw"><table>
 <thead><tr><th>材料</th><th>特点</th></tr></thead>
 <tbody>
-<tr><td>铝镍钴</td><td>B<sub>r</sub> 高，但 H<sub>C</sub> 与抗去磁能力低、寿命短，应用下降</td></tr>
-<tr><td>铁氧体</td><td>H<sub>C</sub> 大、去磁曲线近直线、B<sub>r</sub> 较低、温度系数大、易碎、<b>便宜、耐氧化耐腐蚀</b></td></tr>
-<tr><td><b>稀土</b>（钐钴 1:5、2:17；<b>钕铁硼</b>）</td><td>H<sub>C</sub> 高、BH<sub>max</sub> 大、性能远超其他；钕铁硼剩磁/矫顽力/磁能积都高且价格较低，但<b>温度系数大</b></td></tr>
+<tr><td>铝镍钴</td><td>B<sub>r</sub> 高，但 H<sub>C</sub> 低、抗去磁差、寿命短 → 应用在萎缩</td></tr>
+<tr><td>铁氧体</td><td>H<sub>C</sub> 大、去磁曲线近直线、便宜、耐氧化耐腐蚀；但 B<sub>r</sub> 较低、温度系数大、易碎</td></tr>
+<tr><td><b>稀土：钐钴 / 钕铁硼</b></td><td>H<sub>C</sub>、BH<sub>max</sub> 远超其他。<b>钐钴</b>耐高温但贵；<b>钕铁硼</b>性能最好且相对便宜，但<b>温度系数大</b>（怕热）</td></tr>
 </tbody></table></div>
-<div class="tip">我国稀土储量占世界已探明资源 <b>80%</b>；稀土元素共 <b>17</b> 种（15 个镧系 + 钪 + 钇）。</div>`
+<div class="tip">我国稀土储量约占世界已探明的 <b>80%</b>；稀土元素共 <b>17</b> 种（15 个镧系 + 钪 + 钇）。</div>`
   });
 
   I.push({
-    id: "m14", m: "motor", t: "永磁无刷直流电机：里翻外结构与位置检测", s: 3,
-    tag: "里翻外 位置传感器 电磁式 光电式 磁敏式 无位置传感器 反电动势 轮毂",
+    id: "m14", m: "motor", t: "永磁无刷直流电机：里翻外与位置检测", s: 3,
+    tag: "里翻外 位置传感器 电磁式 光电式 磁敏式 无位置传感器 反电动势 霍尔 轮毂",
     src: S + " · P79–81",
-    b: `<p><b>"里翻外"结构</b>：电枢绕组置于<b>定子</b>内（损耗热量易从机壳散发、便于温控），转子由永磁体激励、无励磁绕组，省去向转子通电的电刷，损耗与发热减小。</p>
-<p><b>三大组成</b>：电机本体 + 位置检测器 + 驱动控制器。</p>
+    b: `<div class="plain">无刷就是把"电刷换向"这件机械活，改成"<b>用传感器知道转子转到哪了，再用电路把电流切到该通的绕组</b>"。代价是必须知道转子位置。</div>
+<p><b>"里翻外"是什么意思</b>：有刷电机是<b>绕组在转子、磁铁在定子</b>；无刷把它反过来——<b>绕组放定子、磁铁放转子</b>。好处很直接：绕组（发热大户）贴着机壳好散热，转子只是块磁铁、不用通电，自然就不需要电刷。</p>
 <div class="kv">
-<div><span class="k">有位置传感器</span><span class="v">电磁式、光电式、磁敏式；转子与电机转子同轴、定子固定在端盖上，检测转子磁极相对定子绕组的位置，为换相逻辑提供信息</span></div>
-<div><span class="k">无位置传感器</span><span class="v"><b>反电动势检测法、定子三次谐波检测法、瞬时电压方程法、续流二极管工作状态检测法</b>；省传感器但仍在研发阶段</span></div>
+<div><span class="k">电机本体</span><span class="v">定子铁芯开槽嵌三相绕组（星形或三角形），转子贴永磁体</span></div>
+<div><span class="k">位置检测器</span><span class="v">告诉控制器"转子现在在哪"，决定此刻该给哪两相通电</span></div>
+<div><span class="k">驱动控制器</span><span class="v">按位置信号开关功率管，把直流按顺序送到各相</span></div>
 </div>
-<p>也可做成<b>内定子、外转子</b>的轮毂直驱结构：外转子永磁体贴在轮辋内圈，减薄磁片以增大电枢直径、提高功率密度，引线从兼作电机轴的车轮中心引出。</p>`
+<div class="tw"><table>
+<thead><tr><th>检测方式</th><th>做法</th><th>评价</th></tr></thead>
+<tbody>
+<tr><td>有传感器</td><td><b>电磁式、光电式、磁敏式（霍尔）</b>：转子同轴带信号盘，定子上装检测头</td><td>可靠、成熟；但零件多、接线多、怕粉尘油污</td></tr>
+<tr><td>无传感器</td><td><b>反电动势检测法、定子三次谐波检测法、瞬时电压方程法、续流二极管工作状态检测法</b></td><td>省零件、成本低、可靠性高；但<b>低速时反电动势太小测不准</b>，仍在研发阶段</td></tr>
+</tbody></table></div>
+<div class="read"><b>为什么"反电动势"能当位置信号</b>：转子磁铁转过去时，会在没通电的那一相绕组里感应出电压，这个电压的过零点就对应转子的特定位置。<b>转速越高信号越强，所以低速不灵。</b></div>
+<p>也可做成<b>内定子、外转子</b>的轮毂直驱结构：外转子磁铁贴在轮辋内圈，磁片做薄、直径做大以提高功率密度，引线从兼作电机轴的车轮中心引出。</p>`
   });
 
   I.push({
-    id: "m15", m: "motor", t: "永磁同步电机：效率与调速精度数据", s: 3,
-    tag: "95% 功率因数 0.95 0.99 0.25 失步 0.5 弱磁",
+    id: "m15", m: "motor", t: "永磁同步电机：三个必背数据与失步", s: 3,
+    tag: "95% 功率因数 0.95 0.99 0.25 失步 0.5 弱磁 过载",
     src: S + " · P82–85",
-    b: `<p>定子通三相对称正弦波电流形成旋转磁场，与转子永磁异性磁极间<b>磁拉力</b>牵引转子同步旋转。</p>
-<div class="tip"><b>必背数据</b>：效率可达 <b>95% 以上</b>（比 Y 系列异步电机高 10%~15%）；功率因数 <b>0.95~0.99</b>；转速与同步转速误差 <b>不大于 0.25 r/min</b>；若因负载过大使误差 <b>大于 0.5 r/min</b> 则进入<b>失步</b>状态。</div>
-<p>与永磁无刷直流相比：正弦波电流驱动<b>转矩脉动小</b>、弱磁扩速范围更宽（靠电枢反应去磁，去磁程度取决于定子电流<b>超前空载电动势的角度</b>），但驱动控制系统更复杂、成本更高。</p>`
+    b: `<div class="plain">永磁同步电机是目前乘用车的主流：<b>效率最高、功率因数最高、转速极准</b>。软肋是"同步"——负载太大就会被拽出同步，叫失步。</div>
+<p>定子通三相对称正弦电流产生旋转磁场，转子的永磁体被磁场"牵着走"，<b>严格同步</b>。</p>
+<div class="tip"><b>必背三个数</b><br>· 效率可达 <b>95% 以上</b>（比 Y 系列异步电机高 10%~15%）<br>· 功率因数 <b>0.95~0.99</b><br>· 转速与同步转速误差 <b>≤ 0.25 r/min</b>；一旦 <b>&gt; 0.5 r/min</b> 就进入<b>失步</b>状态</div>
+<div class="read"><b>失步是什么</b>：同步电机靠"磁极对齐"传力，像两个人手拉手转圈。负载太大 → 手被拽开 → 转子跟不上磁场 → 转速乱掉、转矩骤降。所以同步电机<b>过载能力有限</b>，这是它相对异步电机的一个短板。</div>
+<p>与无刷直流相比：正弦波驱动<b>转矩脉动小</b>、弱磁扩速范围更宽（靠电枢反应去磁），但控制器复杂、成本高。车上希望"过载强、精度可放宽"，所以常把控制目标往效率上偏。</p>`
   });
 
   I.push({
-    id: "m16", m: "motor", t: "开关磁阻电机（SRM）与 SRD 系统", s: 3,
-    tag: "磁阻最小原理 双凸极 SRD 功率变换器 6/4极 8/6极 12/8极 Ns Nr 相数",
+    id: "m16", m: "motor", t: "开关磁阻电机：靠磁阻最小原理转起来", s: 3,
+    tag: "磁阻最小原理 双凸极 SRD 功率变换器 6/4极 8/6极 12/8极 Ns Nr 相数 极距角",
     src: S + " · P86–96",
-    b: `<p><b>运行原理</b>：遵循"<b>磁阻最小原理</b>"——磁通总沿磁阻最小路径闭合，转子凸极轴线趋向与定子磁通轴线对齐，产生磁阻转矩。定子带集中绕组、<b>转子无绕组无永磁体</b>。</p>
-<p><b>SRD 四大部分</b>：SR 电机 + <b>功率变换器</b> + 控制器 + 检测器（位置、电流）。</p>
-<div class="tip"><b>为什么效率高</b>：主开关关断后，绕组电感中的剩余能量经续流二极管<b>回馈电源</b>；绕组电流仅需单向 → 主电路简化、且相绕组与开关管串联，避免电源短路。</div>
-<p><b>转向只取决于通电顺序</b>（A→B→C 逆时针，A→C→B 顺时针），<b>与电流方向无关</b> → 无需控制电流正负，减少开关管数。</p>
-<div class="fm"><div class="eq">转子极距角 θ<sub>r</sub> = <span class="fr"><b>360°</b><u><i>N</i><sub>r</sub></u></span>　　电角度 = 机械角度 × <i>N</i><sub>r</sub>　　<i>n</i> = <span class="fr"><b>60<i>f</i><sub>ph</sub></b><u><i>N</i><sub>r</sub></u></span></div>
-<div class="eq" style="margin-top:6px"><i>N</i><sub>s</sub> = 2<i>km</i>　　<i>N</i><sub>r</sub> = 2<i>k</i>(<i>m</i> − 1)　（取「−」号使定子齿多于转子齿）</div>
-<div class="note">m 相数、N<sub>s</sub>/N<sub>r</sub> 定/转子凸极数、f<sub>ph</sub> 每相开关频率。常用 <b>三相 6/4、三相 12/8、四相 8/6</b>。</div></div>
-<div class="warn">相数、极数增多 → 转矩脉动减小、低速平稳性提高，但结构复杂、开关元件多、成本升高。<b>两相以下无自起动能力</b>。</div>`
+    b: `<div class="plain">这是结构最简单的电机：<b>转子上什么都没有</b>——没有绕组、没有磁铁，就是一块开了齿的铁。它转起来只靠一件事：<b>磁力线总想走最短的路</b>，所以铁齿会被拉到与通电绕组对齐的位置。</div>
+<div class="read"><b>打个比方</b>：定子上有 6 个电磁铁（A/B/C 三相各 2 个），转子是 4 个铁齿。给 A 相通电，离 A 最近的两个铁齿被"吸"过去对齐；A 断电、B 通电，转子又往 B 转 30°。依次 A→B→C 通电，转子就连续转。<b>只跟通电顺序有关，跟电流方向无关。</b></div>
+<div class="fm"><div class="eq">转子极距角 θ<sub>r</sub> = <span class="fr"><b>360°</b><u><i>N</i><sub>r</sub></u></span>　　电角度 = 机械角度 × <i>N</i><sub>r</sub>　　<i>n</i> = <span class="fr"><b>60 <i>f</i><sub>ph</sub></b><u><i>N</i><sub>r</sub></u></span></div></div>
+<div class="sym"><i>N</i><sub>r</sub> 转子凸极数（6/4 极结构里 N<sub>r</sub>=4）｜θ<sub>r</sub> 转子极距角：转过一个齿距对应的机械角｜<i>f</i><sub>ph</sub> 每相绕组的开关频率（Hz）｜<i>n</i> 转速（r/min）</div>
+<div class="fm"><div class="eq"><i>N</i><sub>s</sub> = 2<i>km</i>　　<i>N</i><sub>r</sub> = 2<i>k</i>(<i>m</i> − 1)</div>
+<div class="note">N<sub>s</sub> 定子凸极数、N<sub>r</sub> 转子凸极数、m 相数、k 正整数。取"−"号是为了让定子齿多于转子齿，减小开关频率与铁损。</div></div>
+<div class="sym"><i>m</i> 相数｜<i>N</i><sub>s</sub> 定子凸极数｜<i>N</i><sub>r</sub> 转子凸极数｜<i>k</i> 正整数（决定尺寸系列）</div>
+<div class="read"><b>验证一下</b>：三相 6/4 极，m=3、k=1 → N<sub>s</sub>=2×1×3=6 ✓，N<sub>r</sub>=2×1×(3−1)=4 ✓；四相 8/6 极，m=4、k=1 → N<sub>s</sub>=8 ✓，N<sub>r</sub>=6 ✓。</div>
+<p><b>SRD 系统四大部分</b>：SR 电机 + <b>功率变换器</b> + 控制器 + 检测器（位置、电流）。</p>
+<div class="tip"><b>为什么效率高</b>：开关断开后，绕组里的剩余能量经续流二极管<b>回送电源</b>，不是烧掉。而且绕组电流只需单向 → 主电路简单，相绕组与开关管串联，也不会电源短路。</div>
+<div class="warn">相数、极数增多 → 转矩脉动小、低速更平稳，但结构复杂、开关管多、成本高。<b>两相以下没有自起动能力</b>（转子停在某个位置时通电极可能转不起来）。</div>`
   });
 
   I.push({
-    id: "m17", m: "motor", t: "直驱轮毂力矩电机：为什么是粗短型", s: 2,
-    tag: "轮毂 力矩电机 扁平 0.2 极对数 低速大扭矩",
+    id: "m17", m: "motor", t: "轮毂直驱力矩电机：为什么做得又粗又扁", s: 2,
+    tag: "轮毂 力矩电机 扁平 0.2 极对数 低速大扭矩 直驱",
     src: S + " · P51",
-    b: `<p>轮毂直驱运行于<b>低速大扭矩</b>工况，需用直驱力矩电机。形状为<b>粗而短的扁平式</b>：常规电机为提高功率密度，电枢长度与直径比约为 <b>1</b>；直驱力矩电机约 <b>0.2</b>。</p>
-<p>可用直流、交流、变磁阻等原理，但为提高功率密度与效率希望采用<b>永磁式</b>；为减小低速转矩脉动、提高平稳性，要求选取<b>较多极对数</b>。</p>
-<div class="tip">讲义判断：轮毂直驱可按路况灵活调配驱动功率、显著提高动能回收率，是电动汽车<b>最佳、最终的驱动形式</b>。</div>`
+    b: `<div class="plain">轮毂电机要直接驱动车轮，中间没有减速器，所以它必须<b>自己就能输出大扭矩</b>。而扭矩 = 力 × 半径，半径越大越省劲——所以它长得又粗又扁。</div>
+<div class="kv">
+<div><span class="k">形状</span><span class="v"><b>粗而短的扁平式</b>：常规电机为提高功率密度，电枢长度与直径之比约 <b>1</b>；直驱力矩电机只有约 <b>0.2</b></span></div>
+<div><span class="k">极对数</span><span class="v">要选<b>较多极对数</b>：低速时转矩脉动小、运转平稳</span></div>
+<div><span class="k">原理</span><span class="v">可用直流、交流、变磁阻等，但为提高功率密度与效率，希望采用<b>永磁式</b></span></div>
+</div>
+<div class="sym">"长度/直径 ≈ 0.2" 的含义：直径是长度的 5 倍左右——像一块"厚圆盘"，而不是一根"细长棒"</div>
+<div class="tip">轮毂直驱的好处：可<b>按路况灵活分配各轮功率</b>、动能回收率高、省掉传动链。讲义认为它是电动车<b>最佳、最终的驱动形式</b>。</div>`
   });
 
   C.push(
-    { id: "mc1", m: "motor", q: "四类驱动电机各自最致命的缺点？", a: "直流：电刷换向火花、磨损需维护；交流：控制器需逆变+矢量控制，复杂昂贵；永磁无刷：永磁体受温度影响大，可靠性不足、功率受限，控制器复杂；开关磁阻：<b>转矩脉动大</b>导致振动噪声。" },
-    { id: "mc2", m: "motor", q: "汽车对驱动系统的五字要求？与数控伺服的差别？", a: "<b>稳、省、快、宽、足</b>；数控伺服是<b>稳、准、快、宽、足</b>——把「准确定位」换成「节省电能」，因车载能源受限。" },
-    { id: "mc3", m: "motor", q: "电动汽车下坡滑行时的发电回馈制动在第几象限？为什么？", a: "<b>第Ⅱ象限</b>（正向制动）。因为下坡时电机仍<b>正转</b>（n&gt;0），而电磁转矩方向与转速相反（T&lt;0）。第Ⅳ象限是反向回馈，对应位能负载下放重物。" },
-    { id: "mc4", m: "motor", q: "他励直流电机三种调速方法及性质？", a: "① <b>降压调速</b>——恒转矩，特性与固有特性平行，从基速向下无级调速；② <b>弱磁调速</b>——恒功率，从基速向上；③ 串电阻调速——特性变软、功耗大，现已少用。" },
-    { id: "mc5", m: "motor", q: "弱磁调速为什么必须设互锁保护？", a: "若励磁电流 I_f = 0，则 Φ→0，由 n = U/(C_eΦ) 得 n→∞，产生<b>飞车</b>事故。" },
-    { id: "mc6", m: "motor", q: "弱磁升速的最高转速受什么限制？一般可达多少倍？", a: "受<b>换向条件与机械强度</b>限制；一般 1~2 倍额定转速，特制调速电机可达 3~4 倍。" },
-    { id: "mc7", m: "motor", q: "异步电机三种运行状态对应的转差率范围？", a: "电动机 0&lt;s&lt;1（0&lt;n&lt;n₀）；发电机 s&lt;0（n&gt;n₀）；反接制动 s&gt;1（n&lt;0）。额定负载时 s≈1%~6%。" },
-    { id: "mc8", m: "motor", q: "变频调速为什么必须同时调压？", a: "U₁≈E₁=4.44fN₁k₁Φ。若 U₁ 不变而 f 降低，Φ 将增大使磁路饱和、励磁电流上升、铁损剧增。故恒转矩负载需 <b>E₁/f=常数</b>，恒功率负载需 <b>U₁/√f=常数</b>。" },
-    { id: "mc9", m: "motor", q: "异步电机固有起动特性有何问题？", a: "堵转时起动电流为额定的 4~7 倍，而起动转矩仅 1~1.5 倍——「电流很大、转矩不大」；大电流易损坏蓄电池，降压或 Y-Δ 起动又会同时减小起动转矩。" },
-    { id: "mc10", m: "motor", q: "永磁电机转子三种结构及各自特点？", a: "<b>IPM 内置式</b>：磁阻转矩型，功率密度与过载能力高、易弱磁扩速，但转矩脉动大；<b>SPM 表面式</b>：结构简单、气隙磁场大、电枢反应小；<b>ITPM 镶嵌式</b>：工艺复杂，高速机械完整性好。" },
-    { id: "mc11", m: "motor", q: "硬磁与软磁的判据？", a: "看矫顽力 H_C 与磁滞回线宽窄：<b>硬磁</b> H_C 大、回线宽，H_C &gt; 1 kA/m，作永磁体；<b>软磁</b> H_C 很小、回线窄，作变压器与电机铁心。" },
-    { id: "mc12", m: "motor", q: "开关磁阻电机的转向由什么决定？", a: "只由<b>各相绕组的通电顺序</b>决定（A→B→C 与 A→C→B 相反），<b>与相电流方向无关</b>——这是它可简化功率变换器（电流单向）的根本原因。" },
-    { id: "mc13", m: "motor", q: "SR 电机常用极数组合与约束关系？", a: "常用三相 6/4、三相 12/8、四相 8/6。约束：N_s = 2km，N_r = 2k(m−1)，取「−」号使定子齿多于转子齿；相数增多可减小转矩脉动但成本升高。" },
-    { id: "mc14", m: "motor", q: "永磁同步电机效率、功率因数与失步判据？", a: "效率 95% 以上（比 Y 系列异步高 10%~15%），功率因数 0.95~0.99；转速误差通常 ≤0.25 r/min，若 &gt;0.5 r/min 即进入<b>失步</b>。" },
-    { id: "mc15", m: "motor", q: "直驱力矩电机的外形特征与原因？", a: "粗而短的扁平式，电枢长度/直径约 <b>0.2</b>（常规电机约 1）。因轮毂直驱工作在低速大扭矩工况，需大直径产生大转矩，并要求较多极对数以减小转矩脉动。" }
+    { id: "mc1", m: "motor", q: "四类驱动电机各自最致命的缺点（及原因）？", a: "直流：有电刷 → 换向火花、磨损需维护；交流：控制器要逆变 + 矢量控制，复杂昂贵；永磁无刷：永磁体怕高温（超居里温度退磁），可靠性受限；开关磁阻：<b>转矩脉动大</b> → 振动噪声。" },
+    { id: "mc2", m: "motor", q: "汽车对驱动系统的五字要求？与数控伺服差在哪？", a: "<b>稳、省、快、宽、足</b>。数控伺服是「稳、准、快、宽、足」——把「准确定位」换成「节省电能」，因为车载电量有限。" },
+    { id: "mc3", m: "motor", q: "下坡滑行时的回馈制动在第几象限？为什么？", a: "<b>第Ⅱ象限</b>（正向制动）。下坡时车轮仍<b>正转</b>（n&gt;0），而电磁转矩与转速反向（T&lt;0）。第Ⅳ象限是反向回馈（如重物下放），不是这个场景。" },
+    { id: "mc4", m: "motor", q: "他励直流电机三种调速方法及各自性质？", a: "① <b>降压</b>——恒转矩，特性平行下移，基速以下无级调速；② <b>弱磁</b>——恒功率，基速以上提速；③ 串电阻——特性变软、白耗能量，已少用。" },
+    { id: "mc5", m: "motor", q: "为什么弱磁回路必须互锁保护？", a: "若励磁电流 I_f=0，则磁通 Φ→0；由 n = U/(C_eΦ) 得转速 n→∞，发生<b>飞车</b>，转子会被离心力撕裂。" },
+    { id: "mc6", m: "motor", q: "弱磁能把转速提到多少倍？受什么限制？", a: "一般 <b>1~2 倍</b>额定转速，特制调速电机可达 <b>3~4 倍</b>。受<b>换向火花</b>（电流换向条件）与<b>机械强度</b>（转子离心力）限制。" },
+    { id: "mc7", m: "motor", q: "异步电机三种状态的转差率范围？", a: "电动机 0&lt;s&lt;1（0&lt;n&lt;n₀）；发电机 s&lt;0（n&gt;n₀）；反接制动 s&gt;1（n&lt;0）。额定运行时 s≈1%~6%。" },
+    { id: "mc8", m: "motor", q: "变频调速为什么必须同时调压？", a: "U₁≈E₁=4.44fN₁k₁Φ，匝数是定值，所以 U/f 正比于 Φ。只降频不降压 → Φ 增大 → 铁芯饱和、励磁电流暴涨、铁损剧增。故恒转矩区保持 <b>U/f=常数</b>，恒功率区保持 <b>U/√f=常数</b>。" },
+    { id: "mc9", m: "motor", q: "异步电机起动时的问题具体是什么？", a: "起动电流为额定的 <b>4~7 倍</b>，起动转矩却只有 <b>1~1.5 倍</b>——「电吃得多、活干得少」。大电流冲击蓄电池；降压或 Y-Δ 起动又会把转矩按平方减小。" },
+    { id: "mc10", m: "motor", q: "SPM、IPM、ITPM 分别指什么？怎么记？", a: "S=Surface <b>表面式</b>（磁铁贴在转子表面）；I=Interior <b>内置式</b>（埋进转子内部，多一份磁阻转矩、易弱磁）；Inset <b>镶嵌式</b>（嵌在表面槽内，高速强度好）。越往「里」，越耐高速。" },
+    { id: "mc11", m: "motor", q: "硬磁与软磁怎么区分？", a: "看<b>矫顽力 H_C</b>：硬磁 H_C 大、磁滞回线宽（H_C &gt; 1 kA/m），用作永磁体；软磁 H_C 很小、回线窄、B 随 H 变化大，用作铁心。" },
+    { id: "mc12", m: "motor", q: "开关磁阻电机的转向由什么决定？", a: "只由<b>各相通电的先后顺序</b>决定（A→B→C 与 A→C→B 转向相反），<b>与电流方向无关</b>。所以绕组只需单向电流，功率变换器可以做得很简单。" },
+    { id: "mc13", m: "motor", q: "SR 电机的极数约束关系？举例验证。", a: "N_s = 2km，N_r = 2k(m−1)。三相 6/4：m=3,k=1 → 6 与 4 ✓；四相 8/6：m=4,k=1 → 8 与 6 ✓；三相 12/8：m=3,k=2 → 12 与 8 ✓。" },
+    { id: "mc14", m: "motor", q: "永磁同步电机的效率、功率因数与失步判据？", a: "效率 <b>&gt;95%</b>（比 Y 系列异步高 10%~15%）；功率因数 <b>0.95~0.99</b>；转速误差 ≤0.25 r/min，若 <b>&gt;0.5 r/min 即失步</b>。" },
+    { id: "mc15", m: "motor", q: "直驱力矩电机为什么做成扁平状？", a: "轮毂直驱工作在<b>低速大扭矩</b>工况，没有减速器放大扭矩。扭矩 = 力 × 半径，直径做大才能在有限电磁力下得到大扭矩，所以长度/直径 ≈ <b>0.2</b>（常规电机 ≈1）。" },
+    { id: "mc16", m: "motor", q: "直流电机里 p、a 各是什么？为什么容易混？", a: "<b>p = 极对数</b>（磁极数÷2），<b>a = 支路对数</b>（并联支路数÷2）。两者都以「对数」计，又同时出现在 C_e=pN/60a 里，所以容易混：<b>p 跟磁极走、a 跟绕组并联方式走</b>。" }
   );
 })();

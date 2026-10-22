@@ -4,6 +4,7 @@
 window.EV = {
   mods: [
     { id: "theory", name: "车辆动力学（前置）", short: "理论", desc: "行驶方程 · 附着条件 · 制动与操稳" },
+    { id: "gloss", name: "符号与术语", short: "符号", desc: "字母含义 · 单位 · 白话术语" },
     { id: "struct", name: "电动汽车构造与原理", short: "构造", desc: "BEV · HEV · FCEV · 驱动结构" },
     { id: "batt", name: "动力储能装置", short: "电池", desc: "电池原理 · 性能指标 · 各类电池 · 储能复合" },
     { id: "motor", name: "驱动电机与调速", short: "电机", desc: "直流 · 交流 · 永磁 · 开关磁阻 · 轮毂" },

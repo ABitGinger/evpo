@@ -21,7 +21,8 @@
     id: "t1", m: "theory", t: "四种行驶阻力（★计算题基石）", s: 3,
     tag: "滚动阻力 空气阻力 坡度阻力 加速阻力 行驶方程式 21.15 旋转质量系数",
     src: S + " · P188–193",
-    b: `<div class="fm"><div class="eq"><i>F</i><sub>总</sub> = <i>F</i><sub>f</sub> + <i>F</i><sub>w</sub> + <i>F</i><sub>i</sub> + <i>F</i><sub>j</sub></div></div>
+    b: `<div class="plain">车要往前走，必须先"付掉"四笔账：<b>轮胎压地的滚阻</b>、<b>迎面来的风阻</b>、<b>上坡的重力分力</b>、<b>加速时的惯性</b>。驱动电机出的力，就是把它们加在一起。</div>
+<div class="fm"><div class="eq"><i>F</i><sub>总</sub> = <i>F</i><sub>f</sub> + <i>F</i><sub>w</sub> + <i>F</i><sub>i</sub> + <i>F</i><sub>j</sub></div></div>
 <div class="kv">
 <div><span class="k">滚动阻力</span><span class="v"><i>F</i><sub>f</sub> = <i>fG</i> = <i>fmg</i>；f 为滚动阻力系数（车轮滚动所需推力与径向载荷之比，由<b>轮胎弹性迟滞损失</b>产生，法向反力前移 a，T<sub>f</sub> = aF<sub>z</sub>，f = a/r）</span></div>
 <div><span class="k">空气阻力</span><span class="v"><i>F</i><sub>w</sub> = <i>C</i><sub>D</sub><i>A u</i><sub>a</sub><sup>2</sup>/21.15（u<sub>a</sub> 用 km/h，结果 N）<br>与速度<b>平方</b>成正比；车速翻倍 → 阻力 4 倍、<b>功率 8 倍</b></span></div>
@@ -30,6 +31,7 @@
 </div>
 <div class="fm"><div class="eq">阻力功率 <i>P</i> = <span class="fr"><b><i>F</i><sub>总</sub> · <i>u</i><sub>a</sub></b><u>3600</u></span>（kW，F 用 N、u<sub>a</sub> 用 km/h）</div>
 <div class="note">只有 <b>F<sub>f</sub></b> 与 <b>F<sub>w</sub></b> 在任何行驶条件下都存在；F<sub>i</sub>、F<sub>j</sub> 仅上坡/加速时存在。</div></div>
+<div class="sym"><i>F</i> 阻力或驱动力（N）｜<i>f</i> 滚动阻力系数（无量纲，干沥青 0.013 左右）｜<i>G</i> 车重（N），<i>G</i>=<i>mg</i>｜<i>m</i> 质量（kg）｜<i>g</i> 重力加速度 9.8（m/s²）<br><i>C</i><sub>D</sub> 空气阻力系数（无量纲）｜<i>A</i> 迎风面积（m²）｜<i>u</i><sub>a</sub> 车速（<b>km/h</b>，注意不是 m/s）｜<i>δ</i> 旋转质量换算系数（&gt;1）｜<i>u</i> 车速（m/s）</div>
 <div class="tw"><table>
 <thead><tr><th>路面（充气轿车轮胎）</th><th>f</th><th>路面（充气货车轮胎）</th><th>f</th></tr></thead>
 <tbody>
@@ -83,6 +85,7 @@
     src: S + " · P194",
     b: `<div class="fm"><div class="eq"><i>F</i><sub>t</sub> = <span class="fr"><b><i>T</i><sub>t</sub></b><u><i>r</i></u></span> = <span class="fr"><b><i>k</i> · <i>T</i> · <i>i</i> · η<sub>T</sub></b><u><i>r</i></u></span></div>
 <div class="note">T 为单个驱动电机输出转矩，k 为驱动电机个数（集中驱动 k=1，双轮毂 k=2，四轮毂 k=4）；i 为传动比、η<sub>T</sub> 机械效率。不带减速器的轮毂电机 i=1、η<sub>T</sub>=1；若前后电机功率不一致，T 取<b>平均输出转矩</b>。</div></div>
+<div class="sym"><i>F</i><sub>t</sub> 驱动力（N）｜<i>T</i> 电机输出转矩（N·m）｜<i>k</i> 电机个数｜<i>i</i> 传动比（减速器把转速降几倍、转矩乘几倍）｜<i>η</i><sub>T</sub> 传动效率（0~1）｜<i>r</i> 车轮半径（m）</div>
 <div class="fm"><div class="eq"><i>F</i><sub>t</sub> = <i>F</i><sub>总</sub> = <i>F</i><sub>f</sub> + <i>F</i><sub>w</sub> + <i>F</i><sub>i</sub> + <i>F</i><sub>j</sub>　　（汽车行驶方程式）</div></div>
 <p><b>后备驱动力</b> = F<sub>t</sub> − (F<sub>f</sub>+F<sub>w</sub>+F<sub>i</sub>)：等于零→<b>等速</b>；大于零→<b>加速</b>；小于零→不能开动或减速停车。</p>
 <div class="fm"><div class="eq">驱动条件：<i>F</i><sub>t</sub> ≥ <i>F</i><sub>f</sub> + <i>F</i><sub>w</sub> + <i>F</i><sub>i</sub></div>
@@ -97,6 +100,7 @@
 <div class="note">F<sub>zφ</sub> 为作用于<b>所有驱动轮</b>上的法向反作用力之和。地面对驱动轮的切向反作用力不能大于附着力，否则驱动轮滑转。</div></div>
 <div class="fm"><div class="eq">驱动-附着条件：<i>F</i><sub>f</sub> + <i>F</i><sub>w</sub> + <i>F</i><sub>i</sub> ≤ <i>F</i><sub>t</sub> ≤ <i>F</i><sub>zφ</sub>φ</div>
 <div class="note">这是汽车能行驶的<b>必要与充分条件</b>。</div></div>
+<div class="sym"><i>φ</i> 附着系数（无量纲，0~1）｜<i>F</i><sub>zφ</sub> 作用在<b>驱动轮</b>上的法向反力之和（N）｜<i>G</i> 车重（N）｜<i>a</i> 质心到<b>前</b>轴的距离（m）｜<i>b</i> 质心到<b>后</b>轴的距离（m）｜<i>L</i> 轴距（m）｜<i>h</i><sub>g</sub> 质心高度（m）｜<i>f</i> 滚动阻力系数</div>
 <div class="kv">
 <div><span class="k">后轮驱动</span><span class="v">F<sub>φ2</sub> = φG(a − f h<sub>g</sub>)/L</span></div>
 <div><span class="k">前轮驱动</span><span class="v">F<sub>φ1</sub> = φG(b + f h<sub>g</sub>)/(L + φh<sub>g</sub>)</span></div>
@@ -137,6 +141,7 @@
     src: S + " · P218–220",
     b: `<div class="fm"><div class="eq"><i>s</i> = <span class="fr"><b><i>u</i><sub>w</sub> − <i>r</i><sub>r0</sub>ω<sub>w</sub></b><u><i>u</i><sub>w</sub></u></span> × 100%</div>
 <div class="note">纯滚动 s=0；完全拖滑（抱死）s=100%；边滚边滑 0&lt;s&lt;100%。</div></div>
+<div class="sym"><i>s</i> 滑动率（%）｜<i>u</i><sub>w</sub> 车轮中心前进速度（m/s）｜<i>r</i><sub>r0</sub> 无制动力时车轮的滚动半径（m）｜<i>ω</i><sub>w</sub> 车轮角速度（rad/s）<br>分子 <i>u</i><sub>w</sub>−<i>r</i><sub>r0</sub><i>ω</i><sub>w</sub> 就是"车走得比轮转得快多少"，即打滑的那部分</div>
 <div class="kv">
 <div><span class="k">制动力系数</span><span class="v">φ<sub>b</sub> = F<sub>xb</sub>/G（纵向附着系数）。峰值 <b>φ<sub>p</sub></b> 出现在 <b>s = 15%~20%</b>；s=100% 时为<b>滑动附着系数 φ<sub>s</sub></b>；φ<sub>s</sub>/φ<sub>p</sub> 约 1/3~1</span></div>
 <div><span class="k">侧向力系数</span><span class="v">φ<sub>l</sub> = 侧向力/垂直载荷。s 小时随 s 略升，随后<b>迅速下降</b>；φ<sub>l</sub> 越大，保持转向、防止侧滑的能力越强</span></div>
@@ -159,6 +164,7 @@
     src: S + " · P220–221",
     b: `<div class="fm"><div class="eq"><i>L</i><sub>z</sub> = <i>u</i><sub>0</sub>(<i>t</i><sub>1</sub> + <i>t</i><sub>2</sub>) + ∫<sub>0</sub><sup><i>u</i><sub>0</sub></sup> <span class="fr"><b>d<i>u</i></b><u><i>a</i><sub>j</sub></u></span>　　（等减速时后项 = <i>u</i><sub>0</sub><sup>2</sup> / 2<i>a</i><sub>jmax</sub>）</div>
 <div class="note">t<sub>1</sub> 驾驶员反应时间（<b>0.5~1.0 s</b>）；t<sub>2</sub> 制动传动系作用时间（<b>0.2~0.5 s</b>）。t<sub>1</sub>+t<sub>2</sub> 内无制动效果，称<b>空驶时间</b>，其距离为空驶距离。</div></div>
+<div class="sym"><i>L</i><sub>z</sub> 制动距离（m）｜<i>u</i><sub>0</sub> 制动初速度（m/s）｜<i>t</i><sub>1</sub> 驾驶员反应时间（s）｜<i>t</i><sub>2</sub> 制动器起作用时间（s）｜<i>a</i><sub>j</sub> 制动减速度（m/s²），<i>a</i><sub>jmax</sub> 为其最大值</div>
 <div class="kv">
 <div><span class="k">三阶段</span><span class="v">驾驶员反应 → 制动器起作用 → 持续制动（真正减速停车）</span></div>
 <div><span class="k">制动减速度</span><span class="v">a<sub>jmax</sub> = φ<sub>b</sub>g（一般）；前后轮同时抱死时 = φ<sub>s</sub>g；装理想 ABS 时 = <b>φ<sub>p</sub>g</b></span></div>
@@ -190,12 +196,14 @@
 </div>
 <div class="fm"><div class="eq">稳态横摆角速度增益 <i>g</i><sub>s</sub> = <span class="fr"><b><i>u</i>/<i>L</i></b><u>1 + <i>Ku</i><sup>2</sup></u></span></div>
 <div class="note">K 为<b>稳定性因数</b>（s²/m²）。<b>K=0 中性转向；K&gt;0 不足转向；K&lt;0 过多转向</b>。K 越大不足转向量越大。</div></div>
+<div class="sym"><i>g</i><sub>s</sub> 稳态横摆角速度增益（1/s）：方向盘转 1°，车身转多快｜<i>u</i> 车速（m/s）｜<i>L</i> 轴距（m）｜<i>K</i> 稳定性因数（s²/m²）</div>
 <div class="kv">
 <div><span class="k">特征车速</span><span class="v">u<sub>ch</sub> = √(1/K)（不足转向，K&gt;0）：此时增益仅为同轴距中性转向车的<b>一半</b>；<b>u<sub>ch</sub> 越小 → 不足转向量越大</b></span></div>
 <div><span class="k">临界车速</span><span class="v">u<sub>cr</sub> = 1/√|K|（过多转向，K&lt;0）：分母为 0、增益趋于无穷，<b>极微小转角就产生极大横摆角速度 → 易事故</b></span></div>
 <div><span class="k">设计取向</span><span class="v">过多转向灵敏但<b>不安全</b>；中性转向兼顾但使用中可能转变为过多转向；故一般汽车均应具有<b>适度的不足转向</b>特性</span></div>
 </div>
 <div class="fm"><div class="eq">刚性汽车侧翻阈值 <span class="fr"><b><i>a</i><sub>y</sub></b><u><i>g</i></u></span> = <span class="fr"><b><i>B</i></b><u>2<i>h</i><sub>g</sub></u></span>　　一般式 <span class="fr"><b><i>a</i><sub>y</sub></b><u><i>g</i></u></span> = <span class="fr"><b><i>B</i>/2 + <i>h</i><sub>g</sub>β</b><u><i>h</i><sub>g</sub></u></span></div>
+<div class="sym"><i>a</i><sub>y</sub> 侧向加速度（m/s²）｜<i>g</i> 重力加速度｜<i>B</i> 轮距（m）｜<i>h</i><sub>g</sub> 质心高度（m）｜<i>β</i> 路面横坡角（rad）</div>
 <div class="note">侧翻阈值定义：弯道内侧车轮法向反力降为零时的侧向加速度。增大轮距 B、降低质心高度 h<sub>g</sub> 可提高抗侧翻能力；考虑悬架变形后阈值<b>约减小 5%</b>，瞬态侧翻阈值更小。轿车 1.1~1.7 g，重型货车仅 0.4~0.6 g。</div></div>`
   });
 

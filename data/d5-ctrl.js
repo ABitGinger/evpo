@@ -88,6 +88,8 @@
 </tbody></table></div>
 <div class="fm"><div class="eq">单轮模型：<i>I</i> <span class="fr"><b>dω</b><u>d<i>t</i></u></span> = <i>F</i><sub>Z</sub>φ<sub>b</sub>(<i>s</i>)<i>r</i> − <i>T</i><sub>μ</sub>　→　角减速度与制动力矩 T<sub>μ</sub> 直接相关</div>
 <div class="note">压力升降循环频率每秒可达 <b>10~12 次</b>；当轮速传感器判断 s 低于最佳值时电磁阀断电重新制动，如此反复直至停车。</div></div>
+<div class="sym"><i>I</i> 车轮转动惯量（kg·m²）｜dω/d<i>t</i> 车轮角减速度（rad/s²）｜<i>F</i><sub>Z</sub> 地面对车轮的法向反力（N）｜φ<sub>b</sub>(<i>s</i>) 制动力系数（随滑动率变化，0~1）｜<i>r</i> 车轮半径（m）｜<i>T</i><sub>μ</sub> 制动器摩擦力矩（N·m）</div>
+<div class="read"><b>怎么读</b>：左边是"车轮转速变化的惯性"，右边是"地面给的制动力矩 减去 刹车片施加的制动力矩"。<b>刹车力矩大于地面能给的最大力矩时，轮子就会被刹停（抱死）</b>——ABS 就是在临界点反复松紧。</div>
 <div class="tip"><b>本质</b>：四种方法都是"<b>点刹</b>"，关键在"松、压"的<b>及时性与准确性</b>（传感检测 + 微机运算 + 执行机构响应速度）。轮毂电机可用"发电回馈 + 电磁制动"反复循环代替液压点刹，实现更低成本、更好性能的 ABS。</div>`
   });
 
@@ -98,6 +100,8 @@
     b: `<p><b>电磁式轮速传感器</b>：传感器头（永磁体、极轴、感应线圈）+ 齿圈。齿顶/齿隙交替经过极轴时磁路磁阻分别为最小/最大，磁通交替变化，感应电动势的<b>变化率</b>准确反映轮速。</p>
 <div class="fm"><div class="eq">多普勒频移 <i>F</i><sub>D</sub> = <i>f</i><sub>1</sub> − <i>f</i><sub>2</sub> = <span class="fr"><b>2<i>u</i></b><u>λ</u></span>cosθ</div>
 <div class="note">F<sub>D</sub> 与车速 u 成正比 → 可作车速信息。雷达发射数十吉赫等幅连续波。</div></div>
+<div class="sym"><i>F</i><sub>D</sub> 多普勒频移（Hz）｜<i>f</i><sub>1</sub> 发射频率｜<i>f</i><sub>2</sub> 接收到的回波频率｜<i>u</i> 车速（m/s）｜<i>λ</i> 电磁波波长（m）｜θ 波束与运动方向的夹角（°）</div>
+<div class="read"><b>怎么理解</b>：救护车驶过时鸣笛声变调，就是这个效应——<b>目标越快，回波与发射波的频率差越大</b>。所以测出频移就知道车速。</div>
 <p><b>水银式减速度传感器</b>：玻璃管内水银 + 两导线极柱。<b>低附着路面</b>制动减速度小、水银移动量小 → 电路<b>仍导通</b>；<b>高附着路面</b>减速度大、水银移动大 → <b>断开</b>。控制器据通断判断路面附着状况。</p>
 <div class="tw"><table>
 <thead><tr><th>电磁阀状态</th><th>阀位</th><th>效果</th></tr></thead>
@@ -179,6 +183,8 @@
     b: `<p><b>纯滚动条件</b>：四轮均绕同一圆心转动，各车轮轴线交于同一点。</p>
 <div class="fm"><div class="eq">cot<i>α</i> − cot<i>β</i> = <span class="fr"><b><i>B</i></b><u><i>L</i></u></span>　　<i>R</i> = <span class="fr"><b><i>L</i></b><u>sin<i>α</i></u></span></div>
 <div class="note">α 外转向轮偏转角、β 内转向轮偏转角、B 轮距、L 轴距。<b>外轮转角 α 小于内轮转角 β</b>（因 cot 大者角度小）。R 为外转向轮转向半径，即<b>汽车转弯半径</b>（外轮半径最大）。</div></div>
+<div class="sym"><i>α</i> <b>外</b>转向轮偏转角（°，相对车身纵轴）｜<i>β</i> <b>内</b>转向轮偏转角｜<i>B</i> 左右轮中心距即轮距（m）｜<i>L</i> 前后轴距离即轴距（m）｜<i>R</i> 转弯半径（m，通常指外侧前轮的转弯半径）<br>cot 是"余切"：偏转角越小，余切越大</div>
+<div class="read"><b>一句话理解</b>：转弯时<b>内侧轮要走小圈、外侧轮要走大圈</b>，所以内轮必须比外轮转得更多。这条公式就是"内轮多转多少"的几何关系——不满足它，四个轮子就会互相别着在地面上蹭。</div>
 <div class="warn">记法校验：外侧转弯半径大于内侧 → cotα &gt; cotβ → <b>外减内 = B/L</b>。若写成内减外等于 B/L 则符号反了。</div>
 <p>若转向轮不满足该关系、或驱动轮不满足差速要求 → 路面产生附加阻力、个别车轮滑动、加速轮胎磨损、影响高速稳定性。</p>`
   });
@@ -237,6 +243,8 @@
 <div class="fm"><div class="eq">4WD-2WS（B 轮距、L 轴距、α 外、β 内）：</div>
 <div class="eq" style="margin-top:4px"><i>n</i><sub>fi</sub> = <i>n</i><sub>fo</sub> <span class="fr"><b>sin<i>α</i></b><u>sin<i>β</i></u></span>　　<i>n</i><sub>ro</sub> = <i>n</i><sub>fo</sub> cos<i>α</i>　　<i>n</i><sub>ri</sub> = <i>n</i><sub>fo</sub>(cos<i>α</i> − <span class="fr"><b><i>B</i> sin<i>α</i></b><u><i>L</i></u></span>)</div>
 <div class="note">n<sub>fi</sub> 前内、n<sub>ro</sub> 后外、n<sub>ri</sub> 后内。<b>推导链</b>：R<sub>fo</sub>=L/sinα → R<sub>ro</sub>=R<sub>fo</sub>cosα → R<sub>ri</sub>=R<sub>ro</sub>−B → R<sub>fi</sub>=L/sinβ。</div></div>
+<div class="sym"><i>n</i><sub>fo</sub> 前外轮转速（r/min，作为标定值 = 加速踏板指令车速）｜<i>n</i><sub>fi</sub> 前内轮｜<i>n</i><sub>ro</sub> 后外轮｜<i>n</i><sub>ri</sub> 后内轮<br><i>α</i> 外转向轮偏转角｜<i>β</i> 内转向轮偏转角｜<i>B</i> 轮距（m）｜<i>L</i> 轴距（m）｜<i>R</i> 各轮转弯半径（m）</div>
+<div class="read"><b>核心只有一句话</b>：转弯时每个轮子的转速，与它<b>画圈的半径成正比</b>。半径越大转得越快——这就是"差速"。机械差速器用齿轮实现，电子差速用公式算好每个电机该转多快。</div>
 <div class="kv">
 <div><span class="k">4WD-4WS 逆相</span><span class="v">引入 l（圆心到前轴纵向距离）与 r（圆心到内侧车轮中心横向距离）两个参量；当 α<sub>f</sub>=α<sub>r</sub>、β<sub>f</sub>=β<sub>r</sub> 时转弯半径最小，此时 <b>l = L/2</b>，前后轮圆弧轨迹重合，<b>R<sub>fo</sub>=R<sub>ro</sub>、R<sub>fi</sub>=R<sub>ri</sub></b></span></div>
 <div><span class="k">4WD-4WS 同相</span><span class="v">差速计算公式与逆相<b>完全相同</b>；令后轮偏转角 α<sub>r</sub>=β<sub>r</sub>=0（cos=1）即<b>退化为 4WD-2WS 公式</b></span></div>

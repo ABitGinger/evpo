@@ -661,3 +661,70 @@ mark { background: color-mix(in srgb, var(--star) 30%, transparent); color: inhe
 
 /* 字间距补偿：让署名在视觉上真正居中 */
 .ft span { text-indent: 0.18em; }
+
+/* ---------- 白话开场 & 符号说明 ---------- */
+.plain {
+  margin: 8px 0 10px;
+  padding: 10px 12px 10px 13px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 14.3px;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+.plain::before {
+  content: "一句话看懂";
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 3px;
+  opacity: 0.85;
+}
+.plain b { color: var(--ink); }
+
+.sym {
+  margin: 8px 0 4px;
+  padding-left: 10px;
+  border-left: 2px solid var(--line);
+  font-size: 12.8px;
+  line-height: 1.85;
+  color: var(--ink-2);
+}
+.sym i, .sym var {
+  font-family: var(--math);
+  font-style: italic;
+  font-size: 1.05em;
+  color: var(--ink);
+  padding: 0 1px;
+}
+.sym b { color: var(--ink); font-weight: 600; }
+.sym .u { color: var(--muted); font-size: 11.5px; }
+
+.read {
+  margin: 6px 0 2px;
+  font-size: 13.2px;
+  line-height: 1.75;
+  color: var(--ink-2);
+}
+.read b { color: var(--ink); }
+
+/* 术语表 */
+.gloss { margin: 6px 0; }
+.gloss > div {
+  display: grid;
+  grid-template-columns: 7.2em 1fr;
+  gap: 10px;
+  padding: 7px 0;
+  border-top: 1px dashed var(--line);
+  font-size: 13.8px;
+  line-height: 1.7;
+}
+.gloss > div:first-child { border-top: 0; padding-top: 0; }
+.gloss dt, .gloss .k { color: var(--ink); font-weight: 600; }
+.gloss .v { color: var(--ink-2); }
+@media (max-width: 420px) {
+  .gloss > div { grid-template-columns: 1fr; gap: 2px; }
+}
