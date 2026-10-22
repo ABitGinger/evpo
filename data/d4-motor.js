@@ -44,7 +44,7 @@
     tag: "稳省快宽足 八大要求 峰值电流 电磁制动 跛脚回家 过载",
     src: S + " · P11–27",
     b: `<div class="plain">数控机床对伺服的要求是"<b>稳、准、快、宽、足</b>"；汽车把"准"换成"<b>省</b>"——车上电有限，省电就是省续航。</div>
-<div class="plain" style="background:transparent;border:0;padding:2px 0 0"><b>稳</b> 运行平稳 ｜ <b>省</b> 省电 ｜ <b>快</b> 响应快 ｜ <b>宽</b> 调速范围宽 ｜ <b>足</b> 驱动力足</div>
+<div class="read" style="margin:2px 0 10px"><b>稳</b> 运行平稳 ｜ <b>省</b> 省电 ｜ <b>快</b> 响应快 ｜ <b>宽</b> 调速范围宽 ｜ <b>足</b> 驱动力足</div>
 <ol>
 <li><b>起动力矩大、过载能力强</b>：频繁起步、加速上坡都要短时超载</li>
 <li><b>峰值电流受限</b>：不能超过蓄电池允许的最大放电电流，否则伤电池</li>

@@ -10,7 +10,8 @@
     id: "t0", m: "theory", t: "车辆坐标系与六个自由度", s: 2,
     tag: "坐标系 质心 侧倾 俯仰 横摆 自由度 右手螺旋",
     src: S + " · P188",
-    b: `<p>原点 0 取车身<b>质心</b>，静止于水平路面时：x 轴为车身纵向水平轴（向前为正）、y 轴水平指向驾驶员<b>左侧</b>、z 轴垂直向上，符合右手法则。</p>
+    b: `<div class="plain">先定一套"坐标"：车往哪走是 x、往哪歪是 y、往哪起落是 z，再加上绕三根轴的转动，就是六个自由度。</div>
+<p>原点 0 取车身<b>质心</b>，静止于水平路面时：x 轴为车身纵向水平轴（向前为正）、y 轴水平指向驾驶员<b>左侧</b>、z 轴垂直向上，符合右手法则。</p>
 <div class="kv">
 <div><span class="k">六个自由度</span><span class="v">沿 x/y/z 的平动（前进速度 U、侧向速度 V、垂直速度 W）+ 绕 x/y/z 的转动（<b>侧倾</b> ω<sub>x</sub>、<b>俯仰</b> ω<sub>y</sub>、<b>横摆</b> ω<sub>z</sub>），转动符合右手螺旋定则</span></div>
 </div>
@@ -46,7 +47,8 @@
     id: "t2", m: "theory", t: "空气阻力的五个组成与风阻系数", s: 2,
     tag: "压力阻力 摩擦阻力 形状 干扰 内循环 诱导 58% 14% 12% 7% 9% CD",
     src: S + " · P190–192",
-    b: `<p>空气阻力 = <b>压力阻力</b>（法向压力合力在行驶方向的分力）+ <b>摩擦阻力</b>（空气粘性在车身表面的切向力，与表面积及表面质量有关）。压力阻力又分四部分：</p>
+    b: `<div class="plain">风阻不是一个整块，而是<b>五个来源</b>：车头怼出来的压差、凸起物搅出的乱流、吹进车里的冷却风、车顶车底的升力差、还有贴着车皮摩擦。</div>
+<p>空气阻力 = <b>压力阻力</b>（法向压力合力在行驶方向的分力）+ <b>摩擦阻力</b>（空气粘性在车身表面的切向力，与表面积及表面质量有关）。压力阻力又分四部分：</p>
 <div class="kv">
 <div><span class="k">形状阻力</span><span class="v">前后压力差（压差阻力），占空气阻力<b>大部分</b>；车身外形优化可使其减少一半</span></div>
 <div><span class="k">干扰阻力</span><span class="v">表面凸起物（车灯、门把手、后视镜、天线、底盘凸出物）引起的气流干扰</span></div>
@@ -71,7 +73,8 @@
     id: "t3", m: "theory", t: "动力性三大评价指标", s: 3,
     tag: "最高车速 加速时间 最大爬坡度 30% 16.5度 60% 0-100 0-400m",
     src: S + " · P193–194",
-    b: `<div class="kv">
+    b: `<div class="plain">衡量车"跑得动"就三件事：<b>能跑多快、多久加到 100、能爬多陡</b>。</div>
+<div class="kv">
 <div><span class="k">最高车速</span><span class="v">u<sub>amax</sub>：满载、水平良好路面能达到的最高车速（km/h）。对电机驱动的电动车，即<b>电机最高转速</b>决定最高车速</span></div>
 <div><span class="k">加速能力</span><span class="v">用加速度 a、加速时间 t、加速距离 s 评价。原地起步加速：<b>0→400 m 秒数</b>或 <b>0→100 km/h 时间</b>；超车加速：最高档/次高档由 30 或 40 km/h 全力加速至某高速的时间</span></div>
 <div><span class="k">上坡能力</span><span class="v">最大爬坡度 i<sub>max</sub>：满载、最低档、良好路面能爬上的最大坡度。一般要求 <b>30%（坡度角 16.5°）</b>左右；越野车可达 <b>60%</b></span></div>
@@ -83,7 +86,8 @@
     id: "t4", m: "theory", t: "驱动力、行驶方程式与驱动条件", s: 3,
     tag: "驱动力 传动比 效率 轮毂电机 后备驱动力 等速",
     src: S + " · P194",
-    b: `<div class="fm"><div class="eq"><i>F</i><sub>t</sub> = <span class="fr"><b><i>T</i><sub>t</sub></b><u><i>r</i></u></span> = <span class="fr"><b><i>k</i> · <i>T</i> · <i>i</i> · η<sub>T</sub></b><u><i>r</i></u></span></div>
+    b: `<div class="plain">电机出的力，减去路上四笔阻力，剩下的才是用来加速的"余量"。</div>
+<div class="fm"><div class="eq"><i>F</i><sub>t</sub> = <span class="fr"><b><i>T</i><sub>t</sub></b><u><i>r</i></u></span> = <span class="fr"><b><i>k</i> · <i>T</i> · <i>i</i> · η<sub>T</sub></b><u><i>r</i></u></span></div>
 <div class="note">T 为单个驱动电机输出转矩，k 为驱动电机个数（集中驱动 k=1，双轮毂 k=2，四轮毂 k=4）；i 为传动比、η<sub>T</sub> 机械效率。不带减速器的轮毂电机 i=1、η<sub>T</sub>=1；若前后电机功率不一致，T 取<b>平均输出转矩</b>。</div></div>
 <div class="sym"><i>F</i><sub>t</sub> 驱动力（N）｜<i>T</i> 电机输出转矩（N·m）｜<i>k</i> 电机个数｜<i>i</i> 传动比（减速器把转速降几倍、转矩乘几倍）｜<i>η</i><sub>T</sub> 传动效率（0~1）｜<i>r</i> 车轮半径（m）</div>
 <div class="fm"><div class="eq"><i>F</i><sub>t</sub> = <i>F</i><sub>总</sub> = <i>F</i><sub>f</sub> + <i>F</i><sub>w</sub> + <i>F</i><sub>i</sub> + <i>F</i><sub>j</sub>　　（汽车行驶方程式）</div></div>
@@ -96,7 +100,8 @@
     id: "t5", m: "theory", t: "附着条件：汽车能开动的充分条件", s: 3,
     tag: "附着力 附着系数 法向反作用力 驱动-附着条件 附着利用率 前驱55%",
     src: S + " · P194–196",
-    b: `<div class="fm"><div class="eq">附着力 <i>F</i><sub>φ</sub> = <i>F</i><sub>zφ</sub> · φ　　附着条件 <i>F</i><sub>t</sub> ≤ <i>F</i><sub>zφ</sub>φ</div>
+    b: `<div class="plain">光有劲还不够——<b>轮胎抓不住地，力再大也只能原地打滑</b>。附着力就是"地面最多能传多大劲"。</div>
+<div class="fm"><div class="eq">附着力 <i>F</i><sub>φ</sub> = <i>F</i><sub>zφ</sub> · φ　　附着条件 <i>F</i><sub>t</sub> ≤ <i>F</i><sub>zφ</sub>φ</div>
 <div class="note">F<sub>zφ</sub> 为作用于<b>所有驱动轮</b>上的法向反作用力之和。地面对驱动轮的切向反作用力不能大于附着力，否则驱动轮滑转。</div></div>
 <div class="fm"><div class="eq">驱动-附着条件：<i>F</i><sub>f</sub> + <i>F</i><sub>w</sub> + <i>F</i><sub>i</sub> ≤ <i>F</i><sub>t</sub> ≤ <i>F</i><sub>zφ</sub>φ</div>
 <div class="note">这是汽车能行驶的<b>必要与充分条件</b>。</div></div>
@@ -113,7 +118,8 @@
     id: "t6", m: "theory", t: "附着系数的影响因素与滑水现象", s: 2,
     tag: "路面 轮胎 花纹 车速 滑水 100km/h 10mm 水膜",
     src: S + " · P196–197",
-    b: `<div class="kv">
+    b: `<div class="plain">附着系数就是"轮胎抓地"的分数，0~1 之间。路面、胎面、车速都会让它变，<b>雨天高速最危险</b>。</div>
+<div class="kv">
 <div><span class="k">路面</span><span class="v">越坚硬、微观越粗糙，φ 越高；潮湿时水起润滑作用 → φ 下降。宏观结构应<b>自动排水</b>，微观应粗糙有棱角以穿透水膜。路面有细砂、尘土、油污时 φ 降低，<b>刚下雨时最低</b>，长时间冲刷后回升</span></div>
 <div><span class="k">轮胎</span><span class="v">细而浅花纹适合硬路面；宽而深花纹适合松软路面（增大嵌土剪切面）；纵向曲折大沟槽 + 胎面边缘横向沟槽兼顾纵横抓地；<b>低气压、宽断面、子午线轮胎</b>增大接触面提高附着</span></div>
 <div><span class="k">车速</span><span class="v">车速升高 φ 下降（胎面来不及与微观凹凸嵌合）。<b>滑水现象</b>：高速通过积水层时流体压力使轮胎上浮，φ 接近零——<b>100 km/h、水膜 10 mm</b> 即可能发生</span></div>
@@ -124,7 +130,8 @@
     id: "t7", m: "theory", t: "制动性三指标与两种制动力", s: 3,
     tag: "制动效能 恒定性 方向稳定性 地面制动力 制动器制动力 附着力 热衰退",
     src: S + " · P217–218",
-    b: `<div class="kv">
+    b: `<div class="plain">评价刹车好不好，三件事：<b>刹得住（效能）、连续刹不衰减（恒定性）、刹的时候不跑偏不甩尾（方向稳定）</b>。</div>
+<div class="kv">
 <div><span class="k">制动效能</span><span class="v">制动距离、制动减速度、制动力（最基本指标）</span></div>
 <div><span class="k">效能恒定性</span><span class="v">抗衰退性能 = <b>抗热衰退</b> + 抗水衰退</span></div>
 <div><span class="k">方向稳定性</span><span class="v">按给定路径行驶的能力；跑偏、侧滑、失去转向能力即偏离</span></div>
@@ -139,7 +146,8 @@
     id: "t8", m: "theory", t: "滑动率与 φb-s / φl-s 曲线（ABS 的理论出处）", s: 3,
     tag: "滑动率 15% 20% 峰值附着 滑动附着 侧向力系数 冰 雪 沥青",
     src: S + " · P218–220",
-    b: `<div class="fm"><div class="eq"><i>s</i> = <span class="fr"><b><i>u</i><sub>w</sub> − <i>r</i><sub>r0</sub>ω<sub>w</sub></b><u><i>u</i><sub>w</sub></u></span> × 100%</div>
+    b: `<div class="plain">车轮"滚"和"拖"的比例叫滑动率。<b>完全抱死时侧向力归零</b>，车就只能横着滑——这是 ABS 存在的全部理由。</div>
+<div class="fm"><div class="eq"><i>s</i> = <span class="fr"><b><i>u</i><sub>w</sub> − <i>r</i><sub>r0</sub>ω<sub>w</sub></b><u><i>u</i><sub>w</sub></u></span> × 100%</div>
 <div class="note">纯滚动 s=0；完全拖滑（抱死）s=100%；边滚边滑 0&lt;s&lt;100%。</div></div>
 <div class="sym"><i>s</i> 滑动率（%）｜<i>u</i><sub>w</sub> 车轮中心前进速度（m/s）｜<i>r</i><sub>r0</sub> 无制动力时车轮的滚动半径（m）｜<i>ω</i><sub>w</sub> 车轮角速度（rad/s）<br>分子 <i>u</i><sub>w</sub>−<i>r</i><sub>r0</sub><i>ω</i><sub>w</sub> 就是"车走得比轮转得快多少"，即打滑的那部分</div>
 <div class="kv">
@@ -162,7 +170,8 @@
     id: "t9", m: "theory", t: "制动距离公式与制动全过程", s: 3,
     tag: "制动距离 空驶距离 反应时间 t1 t2 持续制动 0.5 1.0 0.2 0.5",
     src: S + " · P220–221",
-    b: `<div class="fm"><div class="eq"><i>L</i><sub>z</sub> = <i>u</i><sub>0</sub>(<i>t</i><sub>1</sub> + <i>t</i><sub>2</sub>) + ∫<sub>0</sub><sup><i>u</i><sub>0</sub></sup> <span class="fr"><b>d<i>u</i></b><u><i>a</i><sub>j</sub></u></span>　　（等减速时后项 = <i>u</i><sub>0</sub><sup>2</sup> / 2<i>a</i><sub>jmax</sub>）</div>
+    b: `<div class="plain">制动距离 = <b>人反应的那段路 + 刹车建立压力那段路 + 真正减速那段路</b>。前两段常被忽略，其实占了三成以上。</div>
+<div class="fm"><div class="eq"><i>L</i><sub>z</sub> = <i>u</i><sub>0</sub>(<i>t</i><sub>1</sub> + <i>t</i><sub>2</sub>) + ∫<sub>0</sub><sup><i>u</i><sub>0</sub></sup> <span class="fr"><b>d<i>u</i></b><u><i>a</i><sub>j</sub></u></span>　　（等减速时后项 = <i>u</i><sub>0</sub><sup>2</sup> / 2<i>a</i><sub>jmax</sub>）</div>
 <div class="note">t<sub>1</sub> 驾驶员反应时间（<b>0.5~1.0 s</b>）；t<sub>2</sub> 制动传动系作用时间（<b>0.2~0.5 s</b>）。t<sub>1</sub>+t<sub>2</sub> 内无制动效果，称<b>空驶时间</b>，其距离为空驶距离。</div></div>
 <div class="sym"><i>L</i><sub>z</sub> 制动距离（m）｜<i>u</i><sub>0</sub> 制动初速度（m/s）｜<i>t</i><sub>1</sub> 驾驶员反应时间（s）｜<i>t</i><sub>2</sub> 制动器起作用时间（s）｜<i>a</i><sub>j</sub> 制动减速度（m/s²），<i>a</i><sub>jmax</sub> 为其最大值</div>
 <div class="kv">
@@ -177,7 +186,8 @@
     id: "t10", m: "theory", t: "制动方向稳定性：跑偏三原因与抱死顺序", s: 3,
     tag: "跑偏 侧滑 后轴先抱死 前轴先抱死 失去转向 转向节臂",
     src: S + " · P222–223",
-    b: `<p><b>制动跑偏的三个原因</b></p>
+    b: `<div class="plain">刹车时最怕两件事：<b>跑偏</b>（左右力不等）和<b>甩尾</b>（后轮先抱死）。谁先抱死，决定了车往哪边去。</div>
+<p><b>制动跑偏的三个原因</b></p>
 <ol>
 <li>左右车轮（尤其前轴左右转向轮）<b>制动器制动力不相等</b>——制造调整误差、间隙不均、摩擦片粘油、单边轮缸故障、左右胎压不均 → 产生绕质心的旋转力矩；</li>
 <li>悬架导向杆系与转向系拉杆发生<b>运动干涉</b>——设计不合理（转向节上节臂球头销位置过高、钢板弹簧刚度过小），跑偏<b>总是朝同一方向</b>；</li>
@@ -190,7 +200,8 @@
     id: "t11", m: "theory", t: "操纵稳定性：侧偏、稳定性因数与侧翻阈值", s: 3,
     tag: "侧偏角 侧偏力 侧偏刚度 稳定性因数K 不足转向 过多转向 中性转向 特征车速 侧翻阈值 B/2hg",
     src: S + " · P204–212",
-    b: `<div class="kv">
+    b: `<div class="plain">车"听不听话"由两点决定：<b>轮胎被侧向力推着斜走多少（侧偏）</b>，以及<b>三种转向特性</b>——不足、中性、过多。</div>
+<div class="kv">
 <div><span class="k">侧偏现象</span><span class="v">侧向力作用下弹性轮胎产生侧向变形，实际运动方向偏离车轮平面一个角度即<b>侧偏角 α</b>；引起的地面侧向反力称<b>侧偏力 F<sub>y</sub></b></span></div>
 <div><span class="k">线性范围</span><span class="v">α &lt; 5° 时 F<sub>y</sub> = kα 线性；汽车正常行驶侧向加速度 <b>≤0.4g</b>、侧偏角 <b>≤4°~5°</b>。轿车轮胎侧偏刚度 k ≈ <b>28 000~80 000 N/rad</b></span></div>
 </div>
@@ -211,7 +222,8 @@
     id: "t12", m: "theory", t: "平顺性：三个响应量与评价方法", s: 3,
     tag: "平顺性 车身加速度 动挠度 相对动载 阻尼比 0.2 0.4 ISO2631 加权加速度 4 12.5Hz VDV",
     src: S + " · P197–203",
-    b: `<p>平顺性 = 汽车吸收行驶中垂直振动的能力。振动系统可简化为<b>单质量系统</b>（车身质量 m<sub>2</sub> + 弹簧刚度 K + 减振器阻尼 C）。</p>
+    b: `<div class="plain">平顺性就是"颠不颠"。看三个量：<b>车身晃得多厉害、悬架压缩多少、车轮会不会跳离地面</b>。</div>
+<p>平顺性 = 汽车吸收行驶中垂直振动的能力。振动系统可简化为<b>单质量系统</b>（车身质量 m<sub>2</sub> + 弹簧刚度 K + 减振器阻尼 C）。</p>
 <div class="kv">
 <div><span class="k">三个响应量</span><span class="v">① <b>车身加速度 z̈</b>（评价平顺性的主要指标）；② <b>悬架动挠度 f<sub>d</sub></b>（与限位行程配合，不当会撞限位块）；③ <b>车轮与路面间相对动载 F<sub>d</sub>/G</b>（影响附着与操稳，&gt;1 时车轮跳离地面）</span></div>
 <div><span class="k">幅频三区</span><span class="v">低频区（λ≤0.75）车身几乎不动；<b>共振区</b>（0.75≤λ≤√2）幅值急剧放大，阻尼越小峰值越大；高频区（λ≥√2）振幅比&lt;1，悬架起减振作用</span></div>
@@ -227,7 +239,8 @@
     id: "t13", m: "theory", t: "通过性：几何参数、间隙失效与两个系数", s: 2,
     tag: "通过性 最小离地间隙 纵向通过半径 接近角 离去角 顶起 触头 托尾 TC TE",
     src: S + " · P212–216",
-    b: `<p><b>间隙失效三型</b>：中间底部被顶住 = <b>顶起失效</b>；前端触及 = <b>触头失效</b>；尾部触及 = <b>托尾失效</b>。</p>
+    b: `<div class="plain">通过性 = <b>不托底、不卡住、能爬能涉</b>。前者看几何尺寸，后者看地面抓不抓得住。</div>
+<p><b>间隙失效三型</b>：中间底部被顶住 = <b>顶起失效</b>；前端触及 = <b>触头失效</b>；尾部触及 = <b>托尾失效</b>。</p>
 <div class="kv">
 <div><span class="k">几何参数</span><span class="v">最小离地间隙 h<sub>min</sub>、纵向通过半径 ρ<sub>1</sub>、横向通过半径 ρ<sub>2</sub>、接近角 γ<sub>1</sub>、离去角 γ<sub>2</sub>、最小转弯直径 d<sub>min</sub>。ρ<sub>1</sub>、ρ<sub>2</sub> <b>越小</b>通过性越好；γ<sub>1</sub>、γ<sub>2</sub> <b>越大</b>越不易失效</span></div>
 <div><span class="k">支承通过性</span><span class="v">牵引性系数 <b>TC = F<sub>T</sub>/G</b>（单位车重牵引力，越大越好）；牵引效率 <b>TE</b> = 驱动轮输出功率/输入功率（反映功率传递损失）</span></div>
@@ -239,7 +252,8 @@
     id: "t14", m: "theory", t: "电动 vs 燃油：两大驱动优势（论述题金句）", s: 3,
     tag: "调速范围 1:20000 响应 5ms 500ms 两个数量级 短时过载3倍 四象限",
     src: S + " · P223–226",
-    b: `<div class="tw"><table>
+    b: `<div class="plain">电机比发动机好在两点：<b>高效区间宽得多</b>（不用复杂变速箱），<b>响应快两个数量级</b>（500 ms → 5 ms）。</div>
+<div class="tw"><table>
 <thead><tr><th>对比项</th><th>发动机</th><th>电动机</th></tr></thead>
 <tbody>
 <tr><td>高效转矩转速区间</td><td>很窄（约 3000 r/min 附近）→ 必须配<b>庞大复杂变速机构</b></td><td>相当宽广，直接转矩控制下调速范围可达 <b>1:20 000</b>，远高于行驶要求</td></tr>
