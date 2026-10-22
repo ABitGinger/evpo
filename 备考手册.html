@@ -162,6 +162,33 @@ html.booting { overflow: hidden; }
 #boot.err .bbar i { background: #a8421c; }
 #boot.err .bnote { color: #a8421c; }
 @media print { #boot { display: none !important; } }
+
+/* ===== 插图（四象限等） ===== */
+.fig { margin: 12px 0; padding: 10px 8px 6px; border: 1px solid var(--line); border-radius: 10px; background: #f8f9fa; }
+.fig svg { display: block; width: 100%; height: auto; max-width: 420px; margin: 0 auto; }
+.fig .ax { stroke: var(--ink2); stroke-width: 1.4; stroke-linecap: round; }
+.fig .ar { fill: var(--ink2); }
+.fig text { font-family: var(--font); fill: var(--ink2); font-size: 9.5px; }
+.fig .t1 { font-size: 11px; font-weight: 700; fill: var(--ink); }
+.fig .axl { font-family: var(--math); font-style: italic; font-size: 13px; fill: var(--ink); }
+.fig .q-run .t1, .fig .q-run .t2 { fill: var(--accent); }
+.fig .q-brk .t1, .fig .q-brk .t2 { fill: var(--warn); }
+.fig .cap { margin-top: 4px; text-align: center; font-size: 11.5px; color: var(--muted); }
+@media print { .fig { break-inside: avoid; } }
+
+/* ===== 一句话看懂 ===== */
+.plain {
+  margin: 10px 0; padding: 9px 12px;
+  background: #f6f8f8; border-left: 2px solid #bfe0da; border-radius: 0 8px 8px 0;
+  font-size: 13.8px; line-height: 1.75; color: var(--ink2);
+}
+.plain::before {
+  content: "一句话看懂"; display: block;
+  font-size: 9.5px; font-weight: 700; letter-spacing: .1em;
+  color: var(--accent); margin-bottom: 3px; opacity: .85;
+}
+.plain b { color: var(--ink); }
+@media print { .plain { break-inside: avoid; } }
 </style>
 </head>
 <body>
@@ -215,7 +242,7 @@ html.booting { overflow: hidden; }
 <script>
 /* ===== 带进度反馈的顺序加载器 ===== */
 (function () {
-  var V = "20261022e";
+  var V = "20261022g";
   var FILES = [
     ["data/d0-index.js", "模块索引"],
     ["data/d1-theory.js", "车辆动力学"],
